@@ -9,7 +9,7 @@ export default function CreatePlan() {
   const [endDate, setEndDate] = useState('');
 
   const createPlan = async () => {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('reading_plans')
       .insert([{ plan_type: planType, start_date: startDate, end_date: endDate }]);
 
