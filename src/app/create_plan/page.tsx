@@ -1,9 +1,9 @@
 "use client"; // Mark this as a client component
 
 import { useState } from 'react';
-import { supabase } from '../utils/supabase';
+import { supabase } from '../../utils/supabase';
 
-export default function App() {
+export default function CreatePlan() {
   const [planType, setPlanType] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
