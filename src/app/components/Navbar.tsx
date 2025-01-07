@@ -4,14 +4,28 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);  // State to manage menu visibility
+  const [isScrolled, setIsScrolled] = useState(false); // Scroll state
+  const [isMenuOpen, setIsMenuOpen] = useState(false);  // Mobile menu state
+
+  // Scroll effect to toggle navbar styling based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10); // Change navbar style if scrolled past 10px
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);  // Toggle the menu when the hamburger is clicked
+    setIsMenuOpen(!isMenuOpen); // Toggle mobile menu on hamburger click
   };
 
   return (
-    <div className="navbar bg-base-100">
+    <div className={`navbar bg-base-100 ${isScrolled ? 'shadow-md' : ''} transition-all`}>
       <div className="navbar-start">
         <div className="dropdown">
           {/* Hamburger Icon */}
