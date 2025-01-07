@@ -2,14 +2,18 @@ import Link from 'next/link';
 
 export default function LandingPage() {
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold">Welcome to the Bible Reading App</h1>
-      <p className="mt-4">Start your Bible reading plan today!</p>
-      <Link href="/create_plan">
-        <button className="mt-6 bg-blue-500 text-white px-4 py-2 rounded">
-          Get Started
-        </button>
-      </Link>
+    <div className="hero min-h-screen bg-base-200">
+      <div className="hero-content text-center">
+        <div className="max-w-lg">
+          <h1 className="text-5xl font-bold mb-4">Welcome to the Bible Reading App</h1>
+          <p className="mb-6 text-lg">Start your Bible reading plan today and grow in your faith with a structured journey.</p>
+          <Link href="/create_plan">
+            <button className="btn btn-primary text-white py-3 px-6 rounded-md text-xl">
+              Get Started
+            </button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
