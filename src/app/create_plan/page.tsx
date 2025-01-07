@@ -46,7 +46,8 @@ function BiblePlan() {
     async function fetchBibleData() {
       const { data, error } = await supabase
         .from('bible_books')  // Your table name
-        .select('*');         // Make sure this matches your table structure
+        .select('*') // Request the exact row count
+        .limit(1193);
   
       if (error) {
         console.error('Error fetching Bible data:', error);  // Log the error
@@ -61,7 +62,6 @@ function BiblePlan() {
 
 
   function updateSelectionOptions() {
-    console.log("bibleData:", bibleData);  // Log the bibleData to see if it's populated
   
     if (bibleData.length === 0) {
       return [];  // No data, return empty array
@@ -99,9 +99,6 @@ function BiblePlan() {
       alert("Please provide valid input.");
       return;
     }
-    
-    console.log("Selected Options:", selectedOptions); // Debugging step
-
 
     // Calculate books based on the selected options
     const selectedBooks = calculateBooks(selectedOptions, selectionType, bibleData);
@@ -122,6 +119,8 @@ function BiblePlan() {
     }));
 
     const totalChapters = chapters.length;
+    const totalVerses = chapters.reduce((sum, chapter) => sum + chapter.verses, 0);
+
 
     if (totalChapters === 0) {
       setPlan([{ date: "", reading: "No chapters available to distribute." }]);
@@ -131,10 +130,12 @@ function BiblePlan() {
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
     // Decide whether to distribute by chapters, verses, or mixed
-    const distributionType = decideDistribution(totalChapters, 0, totalDays); // ensure it's valid
+    const distributionType = decideDistribution(totalChapters, totalVerses, totalDays); // ensure it's valid
 
     // Ensure the method exists before passing to generateReadingPlan
     const readingPlanMethod = distributionType.method;
+
+    console.log("Total Chapters: ",totalChapters," Total Verses: ",totalVerses," Plan Type: ",distributionType,"Total Days: ",totalDays)
 
     // Dynamically generate the reading plan based on the selected UI inputs
     const generatedPlan: PlanEntry[] = generateReadingPlan(
@@ -148,7 +149,7 @@ function BiblePlan() {
     // Update the state with the generated reading plan
     setPlan(generatedPlan);
 
-
+    
     const planName = `Reading Plan from ${startDate} to ${endDate}`;
     const planId = uuidv4(); // Generate a random UUID for the plan ID
     
@@ -274,20 +275,36 @@ return (
       </form>
     </div>
 
-    {/* Display the generated plan */}
-    {plan.length > 0 && (
-      <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
-        <h2 className="text-2xl font-semibold text-gray-800">Your Reading Plan:</h2>
-        <div className="space-y-2">
+  {/* Display the generated plan */}
+{plan.length > 0 && (
+  <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
+    <h2 className="text-2xl font-semibold text-gray-800">Your Reading Plan:</h2>
+    <div className="overflow-x-auto">
+      <table className="table w-full">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Reading</th>
+          </tr>
+        </thead>
+        <tbody>
           {plan.map((entry, index) => (
-            <div key={index} className="p-4 border-l-4 border-indigo-500">
-              <p className="text-gray-700 font-medium">{entry.date}:</p>
-              <p className="text-gray-600">{entry.reading}</p>
-            </div>
+            <tr key={index}>
+              <td>
+                {new Date(entry.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </td>
+              <td>{entry.reading}</td>
+            </tr>
           ))}
-        </div>
-      </div>
-    )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
   </div>
 );
 }
