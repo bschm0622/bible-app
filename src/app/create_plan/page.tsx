@@ -8,6 +8,7 @@
 import { supabase } from '../../utils/supabase';
 import { useState, useEffect } from 'react';
 import { calculateBooks, decideDistribution, generateReadingPlan } from '../lib/readingPlan';
+import { v4 as uuidv4 } from 'uuid'; // Import UUID v4 generator
 
 
 interface BibleBook {
@@ -150,21 +151,22 @@ function BiblePlan() {
 
     const planName = `Reading Plan from ${startDate} to ${endDate}`;
     const planId = uuidv4(); // Generate a random UUID for the plan ID
-  
+    
     const { data: planData, error: planError } = await supabase
-      .from('plans')
-      .insert([
-        {
-          id: planId, // Use the generated UUID
-          name: planName,
-          start_date: start,
-          end_date: end,
-          user_id: '00000000-0000-0000-0000-000000000000',
-          created_at: new Date(),
-        },
-      ])
-      .single();
-  
+    .from('plans')
+    .insert<Plan[]>([
+      {
+      id: planId, // Use the generated UUID
+      name: planName,
+      start_date: start,
+      end_date: end,
+      user_id: '00000000-0000-0000-0000-000000000000',
+      created_at: new Date(),
+    },
+  ])
+  .select('*') // Ensure data is returned
+  .single(); // We expect only one row to be inserted
+
     if (planError) {
       console.error('Error inserting plan:', planError);
       return;
