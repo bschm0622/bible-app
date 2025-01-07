@@ -1,3 +1,8 @@
+//to do:
+// add support for two new plan tables in supabase
+// add support for writing the plans to the tables when generating plan here
+// add new page to view generated plans
+
 "use client"; // Mark this as a client component
 
 import { supabase } from '../../utils/supabase';
@@ -16,6 +21,15 @@ interface BibleBook {
 interface PlanEntry {
   date: string;
   reading: string;
+}
+
+interface Plan {
+  id: string;
+  name: string;
+  start_date: Date;
+  end_date: Date;
+  user_id: string;
+  created_at: Date;
 }
 
 function BiblePlan() {
@@ -74,7 +88,7 @@ function BiblePlan() {
   
 
   // Function to handle the button click for generating the reading plan
-  const handleGenerateReadingPlan = () => {
+  const handleGenerateReadingPlan = async () => {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
@@ -132,23 +146,67 @@ function BiblePlan() {
 
     // Update the state with the generated reading plan
     setPlan(generatedPlan);
+
+
+    const planName = `Reading Plan from ${startDate} to ${endDate}`;
+    const planId = uuidv4(); // Generate a random UUID for the plan ID
+  
+    const { data: planData, error: planError } = await supabase
+      .from('plans')
+      .insert([
+        {
+          id: planId, // Use the generated UUID
+          name: planName,
+          start_date: start,
+          end_date: end,
+          user_id: '00000000-0000-0000-0000-000000000000',
+          created_at: new Date(),
+        },
+      ])
+      .single();
+  
+    if (planError) {
+      console.error('Error inserting plan:', planError);
+      return;
+    }
+  
+    // Now, planData is guaranteed to have an `id`
+    const planIdFromDb = planData.id;
+  
+    // Insert entries for each day in the generated plan
+    const planEntries = generatedPlan.map((entry) => ({
+      plan_id: planIdFromDb, // Link entries to the new plan using the DB-generated plan ID
+      date: entry.date,
+      reading: entry.reading,
+      created_at: new Date(),
+    }));
+  
+    const { error: entriesError } = await supabase
+      .from('plan_entries')
+      .insert(planEntries);
+  
+    if (entriesError) {
+      console.error('Error inserting plan entries:', entriesError);
+    } else {
+      console.log('Plan and entries saved successfully!');
+    }
   };
+
+
 
 return (
   <div className="container mx-auto p-6 space-y-8 bg-white rounded-lg shadow-md max-w-3xl">
-    <h1 className="text-4xl font-extrabold text-center text-indigo-600 mb-8">
-      Bible Reading Plan Generator
-    </h1>
+    <h1 className="text-4xl font-extrabold text-center text-indigo-600 mb-8">Bible Reading Plan Generator</h1>
 
     <div className="bg-gray-50 p-8 rounded-xl shadow-sm">
       <form id="readingPlanForm" className="space-y-6">
         {/* Select Plan Type */}
         <div>
           <label htmlFor="selectionType" className="block text-sm font-medium text-gray-700">Select by:</label>
-          <select 
-            id="selectionType" 
-            onChange={(e) => setSelectionType(e.target.value)} 
-            value={selectionType} 
+          <select
+            id="selectionType"
+            onChange={(e) => setSelectionType(e.target.value)}
+            value={selectionType}
             className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="books">Specific Books</option>
@@ -160,9 +218,9 @@ return (
         {/* Selection Container */}
         <div id="selectionContainer">
           <label htmlFor="selection" className="block text-sm font-medium text-gray-700">Choose:</label>
-          <select 
-            id="selection" 
-            multiple 
+          <select
+            id="selection"
+            multiple
             onChange={(e) => setSelectedOptions(Array.from(e.target.selectedOptions).map(opt => opt.value))}
             className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
@@ -178,24 +236,24 @@ return (
         <div className="space-y-4">
           <div>
             <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Start Date:</label>
-            <input 
-              type="date" 
-              id="startDate" 
-              value={startDate} 
-              onChange={(e) => setStartDate(e.target.value)} 
-              required 
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              required
               className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
             <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">End Date:</label>
-            <input 
-              type="date" 
-              id="endDate" 
-              value={endDate} 
-              onChange={(e) => setEndDate(e.target.value)} 
-              required 
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              required
               className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -203,9 +261,9 @@ return (
 
         {/* Button to generate plan */}
         <div>
-          <button 
-            type="button" 
-            onClick={handleGenerateReadingPlan} 
+          <button
+            type="button"
+            onClick={handleGenerateReadingPlan}
             className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             Generate Plan
@@ -230,7 +288,6 @@ return (
     )}
   </div>
 );
-
-}  
+}
 
 export default BiblePlan;
