@@ -6,18 +6,6 @@ import Link from "next/link";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);  // State to manage menu visibility
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);  // Toggle the menu when the hamburger is clicked
   };
