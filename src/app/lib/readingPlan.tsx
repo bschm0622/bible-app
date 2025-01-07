@@ -54,14 +54,15 @@
     // Function to generate the reading plan based on user input
     export const generateReadingPlan = (
       method: string,
-      selectedBooks: any[], // Flat array of rows
+      selectedBooks: BibleBook[],
       totalDays: number,
       startDate: Date,
       endDate: Date
     ): PlanEntry[] => {
       const plan: PlanEntry[] = [];
-      let currentDate = new Date(startDate);
+      const currentDate = new Date(startDate);
     
+      // Calculate the total chapters
       const totalChapters = selectedBooks.length;
       if (totalChapters === 0) {
         alert("No chapters available to distribute.");
@@ -69,6 +70,17 @@
           {
             date: "",
             reading: "Error: No chapters found in the selected books.",
+          },
+        ];
+      }
+    
+      // Ensure that the end date is later than the start date
+      if (currentDate >= endDate) {
+        alert("End date must be later than the start date.");
+        return [
+          {
+            date: "",
+            reading: "Error: Invalid date range.",
           },
         ];
       }
@@ -84,8 +96,11 @@
     
       let chapterIndex = 0;
     
-      // Generate the reading plan
+      // Generate the reading plan based on the date range
       for (let i = 0; i < totalDays; i++) {
+        // Ensure we don't go past the end date
+        if (currentDate > endDate) break;
+    
         const chaptersForToday = dailyChaptersArray[i];
         const dailyReadings: string[] = [];
     
@@ -103,7 +118,16 @@
           reading,
         });
     
+        // Move to the next date
         currentDate.setDate(currentDate.getDate() + 1);
+      }
+    
+      // If the plan generated is shorter than expected, pad with error messages
+      if (plan.length < totalDays) {
+        plan.push({
+          date: currentDate.toISOString().split("T")[0],
+          reading: "No reading for this day.",
+        });
       }
     
       return plan;
