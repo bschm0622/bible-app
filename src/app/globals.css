@@ -2,20 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* DaisyUI respects these colors in the selected theme */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: var(--b1); /* Maps to DaisyUI base color */
+  --foreground: var(--bc);
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-base-100 text-base-content font-sans;
 }
