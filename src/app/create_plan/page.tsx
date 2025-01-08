@@ -139,7 +139,7 @@ function BiblePlan() {
 
     // Dynamically generate the reading plan based on the selected UI inputs
     const generatedPlan: PlanEntry[] = generateReadingPlan(
-      readingPlanMethod, // 'chapters', 'verses', or 'mixed'
+      readingPlanMethod,
       selectedBooks,
       totalDays,
       start,
@@ -199,14 +199,13 @@ function BiblePlan() {
 
 
 return (
-  <div className="container mx-auto p-6 space-y-8 bg-white rounded-lg shadow-md max-w-3xl">
-    <h1 className="text-4xl font-extrabold text-center text-indigo-600 mb-8">Bible Reading Plan Generator</h1>
-
-    <div className="bg-gray-50 p-8 rounded-xl shadow-sm">
+  <div className="card mx-auto p-6 space-y-8 max-w-3xl">
+    <div className="bg-base-200 p-8 rounded-xl shadow-sm">
+    <h1 className="text-4xl font-extrabold text-center text-primary-content mb-8">Bible Reading Plan Generator</h1>
       <form id="readingPlanForm" className="space-y-6">
         {/* Select Plan Type */}
         <div>
-          <label htmlFor="selectionType" className="block text-sm font-medium text-gray-700">Select by:</label>
+          <label htmlFor="selectionType" className="block text-sm text-primary-content">Select by:</label>
           <select
             id="selectionType"
             onChange={(e) => setSelectionType(e.target.value)}
@@ -221,7 +220,7 @@ return (
 
         {/* Selection Container */}
         <div id="selectionContainer">
-          <label htmlFor="selection" className="block text-sm font-medium text-gray-700">Choose:</label>
+          <label htmlFor="selection" className="block text-sm text-primary-content">Choose:</label>
           <select
             id="selection"
             multiple
@@ -239,7 +238,7 @@ return (
         {/* Date Inputs */}
         <div className="space-y-4">
           <div>
-            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Start Date:</label>
+            <label htmlFor="startDate" className="block text-sm text-primary-content">Start Date:</label>
             <input
               type="date"
               id="startDate"
@@ -268,7 +267,7 @@ return (
           <button
             type="button"
             onClick={handleGenerateReadingPlan}
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full py-2 px-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             Generate Plan
           </button>
@@ -289,19 +288,24 @@ return (
           </tr>
         </thead>
         <tbody>
-          {plan.map((entry, index) => (
-            <tr key={index}>
-              <td>
-                {new Date(entry.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </td>
-              <td>{entry.reading}</td>
-            </tr>
-          ))}
-        </tbody>
+  {plan.map((entry, index) => {
+    const [year, month, day] = entry.date.split("-").map(Number);
+    const localDate = new Date(year, month - 1, day); // Note: month is 0-based
+
+    return (
+      <tr key={index}>
+        <td>
+          {localDate.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </td>
+        <td>{entry.reading}</td>
+      </tr>
+    );
+  })}
+</tbody>
       </table>
     </div>
   </div>
