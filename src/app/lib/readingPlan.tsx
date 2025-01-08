@@ -64,6 +64,7 @@
     ): PlanEntry[] => {
       const plan: PlanEntry[] = [];
       const currentDate = new Date(startDate);
+      console.log("generateReadingPlan called")
     
       // Calculate the total chapters and verses
       const totalChapters = selectedBooks.length;
@@ -101,20 +102,67 @@
       let chapterIndex = 0;
       let verseIndex = 0;
     
-      for (let i = 0; i < totalDays; i++) {
+      for (let i = 1; i < totalDays; i++) {
         if (currentDate > endDate) break;
     
         const dailyReadings: string[] = [];
     
         if (method === "chapter") {
-          const chaptersPerDay = Math.ceil(totalChapters / totalDays);
-          for (let j = 0; j < chaptersPerDay; j++) {
-            if (chapterIndex >= totalChapters) break;
-            const chapter = selectedBooks[chapterIndex];
-            dailyReadings.push(`${chapter.book_name} ${chapter.chapter}`);
-            chapterIndex++;
-          }
-        } else if (method === "verse") {
+          console.log("Chapter function called");
+        
+          // Step 1: Create an array to map days to chapters
+          const dayChapterMap: { dayCount: number; chaptersRead: number }[] = []; // Inline typing
+          let chapterIndex = 0;  // Index to track chapters as we assign them
+        
+          // Create the day-chapter map once, outside of the loop
+          dailyChaptersArray.forEach((chaptersForToday, dayIndex) => {
+            dayChapterMap.push({ dayCount: dayIndex + 1, chaptersRead: chaptersForToday });
+          });
+        
+          console.log("Day-Chapter Map:", dayChapterMap); // Debug: Log the map
+        
+          // Step 2: Loop through the dayChapterMap to assign chapters to each day
+          dayChapterMap.forEach(({ dayCount, chaptersRead }) => {
+            const dailyReadings: string[] = []; // Array to store readings for the current day
+        
+            // Assign chapters to the current day
+            for (let i = 0; i < chaptersRead; i++) {
+              if (chapterIndex >= selectedBooks.length) break; // Stop if all chapters are assigned
+        
+              const chapter = selectedBooks[chapterIndex];
+              dailyReadings.push(`${chapter.book_name} ${chapter.chapter}`);
+              chapterIndex++; // Move to the next chapter
+            }
+        
+            // Only push to plan if we have chapters for the day
+            if (dailyReadings.length > 0) {
+              const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
+              console.log(formattedDate);
+        
+              // Push the entry for the current day to the plan
+              plan.push({
+                date: formattedDate,
+                reading: dailyReadings.join(", "),
+              });
+        
+              // Debug: Log the day's entry
+              console.log(`Day ${dayCount}:`, {
+                date: formattedDate,
+                reading: dailyReadings,
+              });
+        
+              // Move to the next date only after adding a valid entry
+              currentDate.setDate(currentDate.getDate() + 1);
+            }
+          });
+        
+          // Debug: Log the entire plan
+          console.log("Final Plan Generated:", plan);
+        }
+                
+        
+         else if (method === "verse") {
+          console.log("verse function called");
           const versesPerDay = Math.ceil(totalVerses / totalDays);
           let versesForToday = 0;
     
