@@ -149,6 +149,7 @@ function BiblePlan() {
     // Update the state with the generated reading plan
     setPlan(generatedPlan);
 
+    console.log('Generated Plan:', generatedPlan);
     
     const planName = `Reading Plan from ${startDate} to ${endDate}`;
     const planId = uuidv4(); // Generate a random UUID for the plan ID
