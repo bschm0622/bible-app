@@ -44,7 +44,7 @@
 
     
       if (totalChapters > days) {
-        return { method: 'chapters' };
+        return { method: 'chapter' };
       }
     
       if (targetVersesPerDay > averageVersesPerChapter) {
@@ -55,7 +55,6 @@
     }
     
     
-    // Function to generate the reading plan based on user input
     export const generateReadingPlan = (
       method: string,
       selectedBooks: BibleBook[],
@@ -66,9 +65,10 @@
       const plan: PlanEntry[] = [];
       const currentDate = new Date(startDate);
     
-      // Calculate the total chapters
+      // Calculate the total chapters and verses
       const totalChapters = selectedBooks.length;
       const totalVerses = selectedBooks.reduce((sum, chapter) => sum + chapter.verses, 0);
+
       if (totalChapters === 0) {
         alert("No chapters available to distribute.");
         return [
@@ -90,11 +90,10 @@
         ];
       }
     
-      // Distribute chapters per day
       const baseChaptersPerDay = Math.floor(totalChapters / totalDays);
       const remainingChapters = totalChapters % totalDays;
-    
       const dailyChaptersArray = new Array(totalDays).fill(baseChaptersPerDay);
+      
       for (let i = 0; i < remainingChapters; i++) {
         dailyChaptersArray[i]++;
       }
