@@ -224,43 +224,6 @@
           ];
         }
       }
-    } else if (method === "mixed") {
-      // Mixed distribution: Combine chapters and verses dynamically
-      const mixedChunksPerDay = Math.ceil((totalChapters + totalVerses) / totalDays);
-      let mixedChunksForToday = 0;
-
-      while (mixedChunksForToday < mixedChunksPerDay && chapterIndex < totalChapters) {
-        const chapter = selectedBooks[chapterIndex];
-
-        if (mixedChunksForToday + 1 <= mixedChunksPerDay) {
-          // Add the full chapter
-          dailyReadings.push(
-            `${chapter.book_name} ${chapter.chapter}:${verseIndex + 1}-${
-              chapter.verses
-            }`
-          );
-          mixedChunksForToday += 1;
-          verseIndex = 0;
-          chapterIndex++;
-        } else {
-          // Add partial chapter
-          const endVerse = verseIndex + (mixedChunksPerDay - mixedChunksForToday);
-          dailyReadings.push(
-            `${chapter.book_name} ${chapter.chapter}:${verseIndex + 1}-${endVerse}`
-          );
-          mixedChunksForToday = mixedChunksPerDay;
-          verseIndex = endVerse;
-        }
-      }
-    } else {
-      alert("Invalid method selected. Please choose 'chapter', 'verse', or 'mixed'.");
-      return [
-        {
-          date: "",
-          reading: "Error: Invalid method.",
-        },
-      ];
-    }
     
         const reading = dailyReadings.join(", ");
         plan.push({
