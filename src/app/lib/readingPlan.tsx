@@ -68,8 +68,6 @@
     
       // Calculate the total chapters and verses
       const totalChapters = selectedBooks.length;
-      const totalVerses = selectedBooks.reduce((sum, chapter) => sum + chapter.verses, 0);
-
       if (totalChapters === 0) {
         alert("No chapters available to distribute.");
         return [
@@ -99,131 +97,23 @@
         dailyChaptersArray[i]++;
       }
     
-
       let chapterIndex = 0;
-      let verseIndex = 0;
     
-      for (let i = 1; i < totalDays; i++) {
+      // Generate the reading plan based on the date range
+      for (let i = 0; i < totalDays; i++) {
+        // Ensure we don't go past the end date
         if (currentDate > endDate) break;
     
+        const chaptersForToday = dailyChaptersArray[i];
         const dailyReadings: string[] = [];
     
-        if (method === "chapter") {
-          console.log("Chapter function called");
-        
-          // Step 1: Create an array to map days to chapters
-          const dayChapterMap: { dayCount: number; chaptersRead: number }[] = []; // Inline typing
-          let chapterIndex = 0;  // Index to track chapters as we assign them
-        
-          // Create the day-chapter map once, outside of the loop
-          dailyChaptersArray.forEach((chaptersForToday, dayIndex) => {
-            dayChapterMap.push({ dayCount: dayIndex + 1, chaptersRead: chaptersForToday });
-          });
-        
-          console.log("Day-Chapter Map:", dayChapterMap); // Debug: Log the map
-        
-          // Step 2: Loop through the dayChapterMap to assign chapters to each day
-          dayChapterMap.forEach(({ dayCount, chaptersRead }) => {
-            const dailyReadings: string[] = []; // Array to store readings for the current day
-        
-            // Assign chapters to the current day
-            for (let i = 0; i < chaptersRead; i++) {
-              if (chapterIndex >= selectedBooks.length) break; // Stop if all chapters are assigned
-        
-              const chapter = selectedBooks[chapterIndex];
-              dailyReadings.push(`${chapter.book_name} ${chapter.chapter}`);
-              chapterIndex++; // Move to the next chapter
-            }
-        
-            // Only push to plan if we have chapters for the day
-            if (dailyReadings.length > 0) {
-              const formattedDate = currentDate.toISOString().split("T")[0]; // YYYY-MM-DD format
-              console.log(formattedDate);
-        
-              // Push the entry for the current day to the plan
-              plan.push({
-                date: formattedDate,
-                reading: dailyReadings.join(", "),
-              });
-        
-              // Debug: Log the day's entry
-              console.log(`Day ${dayCount}:`, {
-                date: formattedDate,
-                reading: dailyReadings,
-              });
-        
-              // Move to the next date only after adding a valid entry
-              currentDate.setDate(currentDate.getDate() + 1);
-            }
-          });
-        
-          // Debug: Log the entire plan
-          console.log("Final Plan Generated:", plan);
+        for (let j = 0; j < chaptersForToday; j++) {
+          if (chapterIndex >= totalChapters) break;
+    
+          const chapter = selectedBooks[chapterIndex];
+          dailyReadings.push(`${chapter.book_name} ${chapter.chapter}`);
+          chapterIndex++;
         }
-                
-        
-         else if (method === "verse") {
-          console.log("verse function called");
-          const versesPerDay = Math.ceil(totalVerses / totalDays);
-          let versesForToday = 0;
-    
-          while (versesForToday < versesPerDay && chapterIndex < totalChapters) {
-            const chapter = selectedBooks[chapterIndex];
-            const remainingVerses = chapter.verses - verseIndex;
-    
-            if (versesForToday + remainingVerses <= versesPerDay) {
-              // Include entire chapter
-              dailyReadings.push(
-                `${chapter.book_name} ${chapter.chapter}:${verseIndex + 1}-${chapter.verses}`
-              );
-              versesForToday += remainingVerses;
-              verseIndex = 0; // Reset verse index for the next chapter
-              chapterIndex++;
-            } else {
-              // Include partial chapter
-              const endVerse = verseIndex + (versesPerDay - versesForToday);
-              dailyReadings.push(
-                `${chapter.book_name} ${chapter.chapter}:${verseIndex + 1}-${endVerse}`
-              );
-              versesForToday = versesPerDay;
-              verseIndex = endVerse; // Move verse index to the next unprocessed verse
-            }
-          }
-        } else if (method === "mixed") {
-          const mixedChunksPerDay = Math.ceil((totalChapters + totalVerses) / totalDays);
-          let mixedChunksForToday = 0;
-    
-          while (mixedChunksForToday < mixedChunksPerDay && chapterIndex < totalChapters) {
-            const chapter = selectedBooks[chapterIndex];
-    
-            if (mixedChunksForToday + 1 <= mixedChunksPerDay) {
-              // Add the full chapter
-              dailyReadings.push(
-                `${chapter.book_name} ${chapter.chapter}:${verseIndex + 1}-${chapter.verses}`
-              );
-              mixedChunksForToday += 1;
-              verseIndex = 0;
-              chapterIndex++;
-            } else {
-              // Add partial chapter
-              const endVerse = verseIndex + (mixedChunksPerDay - mixedChunksForToday);
-              dailyReadings.push(
-                `${chapter.book_name} ${chapter.chapter}:${verseIndex + 1}-${endVerse}`
-              );
-              mixedChunksForToday = mixedChunksPerDay;
-              verseIndex = endVerse;
-            }
-          }
-        } else {
-          alert("Invalid method selected. Please choose 'chapter', 'verse', or 'mixed'.");
-          return [
-            {
-              date: "",
-              reading: "Error: Invalid method.",
-            },
-          ];
-        }
-      }
     
         const reading = dailyReadings.join(", ");
         plan.push({
