@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,6 +7,7 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
+    extend: {},
   },
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
@@ -45,7 +45,5 @@ const config: Config = {
       // "nord",
       // "sunset",
     ],
-  },
-};
-
-export default config;
+}
+}

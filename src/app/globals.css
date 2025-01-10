@@ -1,3 +1,4 @@
+/* Existing Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,4 +11,25 @@
 
 body {
   @apply bg-base-100 text-base-content font-sans;
+}
+
+/* Add custom styles after the existing Tailwind configuration */
+
+/* Add custom react-select styles using DaisyUI's classes */
+@layer components {
+  .daisy-select .react-select__control {
+    @apply bg-transparent border-2 border-gray-300 rounded-md;
+  }
+
+  .daisy-select .react-select__option {
+    @apply text-gray-700 py-2 px-4;
+  }
+
+  .daisy-select .react-select__option--is-selected {
+    @apply bg-primary text-white;
+  }
+
+  .daisy-select .react-select__menu {
+    @apply bg-white border-gray-300 rounded-md;
+  }
 }

@@ -6,8 +6,8 @@ import { calculateBooks, decideDistribution, generateReadingPlan } from '../lib/
 import { v4 as uuidv4 } from 'uuid'; // UUID for unique plan IDs
 import { Plan, PlanEntry } from '../../types/planTypes'; // Types for plans and plan entries
 import { BibleBook } from '../../types/bibleBook'; // Type for Bible books
-import DateRangePicker from "../components/dateRangePicker"; // Custom date range picker component
-import Select from 'react-select'; // React Select for multi-select with chips and search
+import { DateRangePicker } from "../components/dateRangePicker"; // Custom date range picker component
+import { CustomSelect } from './components/customSelect';
 
 function BiblePlan() {
   // State variables
@@ -201,18 +201,20 @@ function BiblePlan() {
           </div>
 
           {/* Multi-Select */}
-          <div>
-            <label htmlFor="selection" className="block text-sm text-primary-content">
-              Choose:
-            </label>
-            <Select
-              isMulti
-              options={getSelectionOptions()}
-              onChange={(options) => setSelectedOptions(options.map(opt => opt.value))}
-              className="mt-1"
-              placeholder="Search and select..."
-            />
-          </div>
+              <div>
+                <label htmlFor="selection" className="block text-sm text-primary-content">
+                  Choose:
+                </label>
+
+                {/* CustomSelect with isMulti for multi-select functionality */}
+                <CustomSelect
+                  isMulti
+                  options={getSelectionOptions()}
+                  onChange={handleSelectionChange}
+                  className="mt-1"
+                  placeholder="Search and select..."
+                />
+              </div>
 
           {/* Date Range Picker */}
           <DateRangePicker onDateChange={handleDateChange} />
