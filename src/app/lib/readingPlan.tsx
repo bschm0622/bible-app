@@ -1,16 +1,5 @@
-// BibleBook type definition
-export interface BibleBook {
-  book_name: string;
-  testament: string;
-  type: string;
-  chapter: number;  // A single chapter
-  verses: number;   // Verses in that chapter
-}
-
-interface PlanEntry {
-  date: string;
-  reading: string;
-}
+import {PlanEntry } from '../../types/planTypes';
+import { BibleBook } from '../../types/bibleBook';
 
 // Function to calculate books based on selection criteria
 export function calculateBooks(
@@ -208,11 +197,12 @@ export const generateReadingPlan = (
   const dailyChaptersArray = distributeReadings(totalChapters, totalDays);
   const dailyVersesArray = distributeReadings(totalVerses, totalDays);
 
-  let chapterIndex = 0;
-  let verseIndex = 0;
 
   // Generate the reading plan based on the selected method
   for (let i = 0; i < totalDays; i++) {
+
+    if (currentDate > endDate) break;
+
     const dailyReadings: string[] = [];
     const chaptersForToday = method === "chapter" ? dailyChaptersArray[i] : dailyVersesArray[i];
 
