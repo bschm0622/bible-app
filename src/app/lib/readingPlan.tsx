@@ -1,16 +1,5 @@
-// BibleBook type definition
-export interface BibleBook {
-  book_name: string;
-  testament: string;
-  type: string;
-  chapter: number;  // A single chapter
-  verses: number;   // Verses in that chapter
-}
-
-interface PlanEntry {
-  date: string;
-  reading: string;
-}
+import {PlanEntry } from '../../types/planTypes';
+import { BibleBook } from '../../types/bibleBook';
 
 // Function to calculate books based on selection
 export function calculateBooks(
