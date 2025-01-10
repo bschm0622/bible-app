@@ -5,7 +5,6 @@ import Link from "next/link";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false); // Scroll state
-  const [isMenuOpen, setIsMenuOpen] = useState(false);  // Mobile menu state
 
   // Scroll effect to toggle navbar styling based on scroll position
   useEffect(() => {
@@ -20,55 +19,54 @@ const Navbar = () => {
     };
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen); // Toggle mobile menu on hamburger click
-  };
-
   return (
     <div className={`navbar bg-base-100 ${isScrolled ? 'shadow-md' : ''} transition-all`}>
       <div className="navbar-start">
-        <div className="dropdown">
-          {/* Hamburger Icon */}
-          <div 
-            tabIndex={0} 
-            role="button" 
-            className="btn btn-ghost lg:hidden" 
-            onClick={toggleMenu}  // Toggle menu on click
+        {/* Drawer Toggle Button */}
+        <label htmlFor="drawer-toggle" className="btn btn-ghost lg:hidden">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16" 
-              />
-            </svg>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h8m-8 6h16"
+            />
+          </svg>
+        </label>
+
+        <Link href="/" className="btn btn-ghost text-xl">Bible Reading App</Link>
+      </div>
+
+      {/* Drawer for Mobile */}
+      <div className="drawer drawer-mobile">
+        {/* Drawer Content */}
+        <div className="drawer-content">
+          <div className="navbar-center hidden lg:flex">
+            <ul className="menu menu-horizontal px-1">
+              <li><Link href="/">Home</Link></li>
+              <li><Link href="/create_plan">Create Plan</Link></li>
+              <li><Link href="/view_plans">View Plans</Link></li>
+            </ul>
           </div>
-          {/* Mobile Menu */}
-          <ul
-            tabIndex={0}
-            className={`menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow ${isMenuOpen ? 'block' : 'hidden'}`}  // Toggle visibility
-          >
+        </div>
+
+        {/* Drawer Side (Mobile Menu) */}
+        <div className="drawer-side">
+          <label htmlFor="drawer-toggle" className="drawer-overlay"></label>
+          <ul className="menu p-4 w-64 bg-base-100 text-base-content">
             <li><Link href="/">Home</Link></li>
             <li><Link href="/create_plan">Create Plan</Link></li>
             <li><Link href="/view_plans">View Plans</Link></li>
           </ul>
         </div>
-        <Link href="/" className="btn btn-ghost text-xl">Bible Reading App</Link>
       </div>
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/create_plan">Create Plan</Link></li>
-          <li><Link href="/view_plans">View Plans</Link></li>
-        </ul>
-      </div>
+
       <div className="navbar-end">
         <a className="btn">Button</a>
       </div>
