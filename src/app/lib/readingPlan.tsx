@@ -197,6 +197,8 @@ export const generateReadingPlan = (
   const dailyChaptersArray = distributeReadings(totalChapters, totalDays);
   const dailyVersesArray = distributeReadings(totalVerses, totalDays);
 
+  let chapterIndex = 0;
+  let verseIndex = 0;
 
   // Generate the reading plan based on the selected method
   for (let i = 0; i < totalDays; i++) {
