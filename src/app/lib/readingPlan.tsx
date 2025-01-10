@@ -257,48 +257,98 @@ export const generateReadingPlan = (
     const dailyReadings: string[] = [];
 
     if (method === "chapter") {
-      // Handle chapter logic
-      const chaptersForToday = dailyChaptersArray[i];
-      for (let j = 0; j < chaptersForToday; j++) {
-        if (chapterIndex >= totalChapters) break;
-
-        const chapter = selectedBooks[chapterIndex];
-        dailyReadings.push(`${chapter.book_name} ${chapter.chapter}`);
-        chapterIndex++;
+      // Chapter-based logic
+      const baseChaptersPerDay = Math.floor(totalChapters / totalDays); // Base chapters per day
+      const remainingChapters = totalChapters % totalDays; // Remaining chapters after division
+      const dailyChaptersArray = new Array(totalDays).fill(baseChaptersPerDay);
+    
+      // Distribute the remaining chapters across the days
+      for (let i = 0; i < remainingChapters; i++) {
+        dailyChaptersArray[i]++;
       }
-
-      const reading = formatReading(dailyReadings);
-      plan.push({
-        date: currentDate.toISOString().split("T")[0],
-        reading,
-      });
-
-    } else if (method === "verse") {
-      // Handle verse logic
-      const versesForToday = dailyVersesArray[i];
-      let versesAdded = 0;
-
-      while (versesAdded < versesForToday && verseIndex < totalVerses) {
-        const book = selectedBooks.find((b) =>
-          b.chapter === selectedBooks[verseIndex]?.chapter
-        );
-        if (!book) break;
-
-        const verse = selectedBooks[verseIndex];
-        dailyReadings.push(`${verse.book_name} ${verse.chapter}:${verse.verses}`);
-        versesAdded += 1;
-        verseIndex++;
+    
+      let chapterIndex = 0; // Track which chapter we are at
+    
+      // Generate the reading plan
+      for (let i = 0; i < totalDays; i++) {
+        const dailyReadings: string[] = [];
+        const chaptersForToday = dailyChaptersArray[i]; // Number of chapters to include for the day
+    
+        // Add the chapters to today's readings
+        for (let j = 0; j < chaptersForToday; j++) {
+          if (chapterIndex >= totalChapters) break; // Ensure we don't exceed available chapters
+    
+          const chapter = selectedBooks[chapterIndex];
+          dailyReadings.push(`${chapter.book_name} ${chapter.chapter}`);
+          chapterIndex++;
+        }
+    
+        // Format and add the reading for the day
+        const reading = formatReading(dailyReadings);
+        plan.push({
+          date: currentDate.toISOString().split("T")[0], // Get the current date in 'YYYY-MM-DD' format
+          reading,
+        });
+    
+        // Move to the next date
+        currentDate.setDate(currentDate.getDate() + 1); // Increment the current date
       }
-
-      const reading = formatVerseReading(dailyReadings);
-      plan.push({
-        date: currentDate.toISOString().split("T")[0],
-        reading,
-      });
     }
 
-    currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-  }
+      else if (method === "verse") {
+        // Verse-based logic
+        const baseVersesPerDay = Math.floor(totalVerses / totalDays); // Base verses per day
+        const remainingVerses = totalVerses % totalDays; // Remaining verses after division
+        const dailyVersesArray = new Array(totalDays).fill(baseVersesPerDay);
+      
+        // Distribute the remaining verses across the days
+        for (let i = 0; i < remainingVerses; i++) {
+          dailyVersesArray[i]++;
+        }
+      
+        let verseIndex = 0; // Track which verse we are at
+        let chapterIndex = 0; // Track the chapter we are processing
+      
+        // Generate the reading plan
+        for (let i = 0; i < totalDays; i++) {
+          const dailyReadings: string[] = [];
+          let versesForToday = dailyVersesArray[i]; // Number of verses to include for the day
+      
+          while (versesForToday > 0 && chapterIndex < totalChapters) {
+            const chapter = selectedBooks[chapterIndex];
+            const remainingVersesInChapter = chapter.verses - verseIndex;
+      
+            // If the current chapter can fulfill the verses for today
+            if (remainingVersesInChapter <= versesForToday) {
+              // Add all remaining verses in this chapter
+              for (let v = verseIndex + 1; v <= chapter.verses; v++) {
+                dailyReadings.push(`${chapter.book_name} ${chapter.chapter}:${v}`);
+              }
+              versesForToday -= remainingVersesInChapter; // Reduce the verses for today
+              verseIndex = 0; // Reset verseIndex
+              chapterIndex++; // Move to the next chapter
+            } else {
+              // If we can only include part of this chapter's verses
+              for (let v = verseIndex + 1; v <= verseIndex + versesForToday; v++) {
+                dailyReadings.push(`${chapter.book_name} ${chapter.chapter}:${v}`);
+              }
+              verseIndex += versesForToday; // Update verseIndex
+              versesForToday = 0; // Mark the day as complete
+            }
+          }
+      
+          // Add the daily reading entry to the plan
+          const reading = formatVerseReading(dailyReadings);
+          plan.push({
+            date: currentDate.toISOString().split("T")[0],
+            reading,
+          });
+      
+          // Move to the next date
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+      }
+    }      
 
   return plan;
 };
