@@ -9,6 +9,8 @@ import { supabase } from '../../utils/supabase';
 import { useState, useEffect } from 'react';
 import { calculateBooks, decideDistribution, generateReadingPlan } from '../lib/readingPlan';
 import { v4 as uuidv4 } from 'uuid'; // Import UUID v4 generator
+import DateRangePicker from "../components/dateRangePicker";
+
 
 
 interface BibleBook {
@@ -196,6 +198,17 @@ function BiblePlan() {
     }
   };
 
+  const handleDateChange = (start: string | null, end: string | null) => {
+    // Update state for start and end dates
+    if (start && end) {
+      setStartDate(start);
+      setEndDate(end);
+    }
+  
+    console.log("Selected Start Date:", start);
+    console.log("Selected End Date:", end);
+  };
+  
 
 
 return (
@@ -238,28 +251,8 @@ return (
         {/* Date Inputs */}
         <div className="space-y-4">
           <div>
-            <label htmlFor="startDate" className="block text-sm text-primary-content">Start Date:</label>
-            <input
-              type="date"
-              id="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              required
-              className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">End Date:</label>
-            <input
-              type="date"
-              id="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              required
-              className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+        <DateRangePicker onDateChange={handleDateChange} />
+        </div>
         </div>
 
         {/* Button to generate plan */}
