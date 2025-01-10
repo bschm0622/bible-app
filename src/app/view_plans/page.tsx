@@ -10,7 +10,7 @@ const ViewPlansPage = () => {
   const [planEntries, setPlanEntries] = useState<PlanEntry[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // Track current page
-  const [entriesPerPage, setEntriesPerPage] = useState(5); // Number of entries per page
+  const [entriesPerPage] = useState(5); // Number of entries per page
 
   useEffect(() => {
     // Fetch plans from the database

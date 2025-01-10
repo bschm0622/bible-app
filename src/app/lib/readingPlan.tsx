@@ -236,15 +236,12 @@ export const generateReadingPlan = (
     dailyVersesArray[i]++;
   }
 
-  let chapterIndex = 0;
-  let verseIndex = 0;
 
   // Generate the reading plan
   for (let i = 0; i < totalDays; i++) {
     if (currentDate > endDate) break;
 
-    const dailyReadings: string[] = [];
-
+    
     if (method === "chapter") {
       // Chapter-based logic
       const baseChaptersPerDay = Math.floor(totalChapters / totalDays); // Base chapters per day
