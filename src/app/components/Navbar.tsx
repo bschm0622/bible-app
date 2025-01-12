@@ -3,6 +3,14 @@
 import Link from "next/link";
 
 const Navbar = () => {
+  const closeDrawer = () => {
+    // This will uncheck the checkbox to close the drawer
+    const drawerToggle = document.getElementById('my-drawer-3') as HTMLInputElement;
+    if (drawerToggle) {
+      drawerToggle.checked = false;
+    }
+  };
+
   return (
     <div className="drawer">
       {/* Hidden Input for Drawer Toggle */}
@@ -31,10 +39,15 @@ const Navbar = () => {
             </label>
           </div>
 
-          {/* Navbar Title */}
-          <div className="mx-2 flex-1 px-2">
+          {/* Navbar Logo and Title */}
+          <div className="mx-2 flex items-center">
+            <img
+              src="https://szpufgqjhqnfsjdkcrba.supabase.co/storage/v1/object/public/images/bible-reading-logo.png"
+              alt="Bible Reading App Logo"
+              className="h-10 mr-2"
+            />
             <Link href="/" className="text-xl font-bold">
-              Bible Reading App
+              Verdant Verse
             </Link>
           </div>
 
@@ -49,8 +62,7 @@ const Navbar = () => {
         </div>
 
         {/* Page Content */}
-        <main className="p-4">
-        </main>
+        <main className="p-4"></main>
       </div>
 
       {/* Mobile Sidebar Drawer */}
@@ -62,9 +74,9 @@ const Navbar = () => {
         ></label>
         {/* Sidebar Links */}
         <ul className="menu bg-base-200 min-h-full w-80 p-4">
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/create_plan">Create Plan</Link></li>
-          <li><Link href="/view_plans">View Plans</Link></li>
+          <li><Link href="/" onClick={closeDrawer}>Home</Link></li>
+          <li><Link href="/create_plan" onClick={closeDrawer}>Create Plan</Link></li>
+          <li><Link href="/view_plans" onClick={closeDrawer}>View Plans</Link></li>
         </ul>
       </div>
     </div>

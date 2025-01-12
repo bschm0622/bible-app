@@ -156,8 +156,8 @@ const handleSelectionChange = (options: any) => {
   return (
     <div className="card mx-auto p-6 space-y-8 max-w-3xl">
       <div className="bg-base-200 p-8 rounded-xl shadow-sm">
-        <h1 className="text-4xl font-extrabold text-center text-primary-content mb-8">
-          Bible Reading Plan Generator
+        <h1 className="text-3xl font-extrabold text-center text-primary-content mb-8">
+          Generate Your Plan
         </h1>
         <form id="readingPlanForm" className="space-y-6">
           <div>
