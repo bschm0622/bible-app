@@ -1,105 +1,100 @@
-"use client"; // Mark this as a client component
-
-import { supabase } from '../../utils/supabase'; // Supabase client for database interactions
+"use client";
+import { supabase } from '../../utils/supabase';
 import { useState, useEffect } from 'react';
-import { calculateBooks, decideDistribution, generateReadingPlan } from '../lib/readingPlan'; // Helper functions for plan generation
-import { v4 as uuidv4 } from 'uuid'; // UUID for unique plan IDs
-import { Plan, PlanEntry } from '../../types/planTypes'; // Types for plans and plan entries
-import { BibleBook } from '../../types/bibleBook'; // Type for Bible books
-import { DateRangePicker } from "../components/dateRangePicker"; // Custom date range picker component
-import { CustomSelect } from './components/customSelect';
+import { calculateBooks, decideDistribution, generateReadingPlan } from '../lib/readingPlan';
+import { v4 as uuidv4 } from 'uuid';
+import { Plan, PlanEntry } from '../../types/planTypes';
+import { BibleBook } from '../../types/bibleBook';
+import DateRangePicker from "../components/dateRangePicker";
+import dynamic from 'next/dynamic';
+const CustomSelect = dynamic(() => import("../components/customSelect"), { ssr: false }); 
+
 
 function BiblePlan() {
-  // State variables
-  const [bibleData, setBibleData] = useState<BibleBook[]>([]); // Holds Bible data fetched from Supabase
-  const [plan, setPlan] = useState<PlanEntry[]>([]); // Generated reading plan
-  const [selectionType, setSelectionType] = useState("books"); // Type of selection (books, testament, type)
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]); // User-selected options
-  const [startDate, setStartDate] = useState(''); // Selected start date
-  const [endDate, setEndDate] = useState(''); // Selected end date
-  const [planName, setPlanName] = useState(''); // User-defined plan name
+  const [bibleData, setBibleData] = useState<BibleBook[]>([]);
+  const [plan, setPlan] = useState<PlanEntry[]>([]);
+  const [selectionType, setSelectionType] = useState("books");
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [planName, setPlanName] = useState('');
 
-  // Fetch Bible data from Supabase on component mount
   useEffect(() => {
     async function fetchBibleData() {
       const { data, error } = await supabase
         .from('bible_books')
         .select('*')
-        .limit(1193); // Limit to maximum number of chapters in the Bible
+        .limit(1193);
 
       if (error) {
         console.error('Error fetching Bible data:', error);
       } else {
-        setBibleData(data || []); // Populate state with fetched data
+        setBibleData(data || []);
       }
     }
 
     fetchBibleData();
   }, []);
 
-  // Generate selection options based on the current selection type
   function getSelectionOptions() {
     if (selectionType === "books") {
       return [...new Set(bibleData.map(book => book.book_name))].map(bookName => ({
         value: bookName,
-        label: bookName, // Map book names to value-label pairs
+        label: bookName,
       }));
     }
 
     if (selectionType === "testament") {
       return ["Old Testament", "New Testament"].map(testament => ({
         value: testament,
-        label: testament, // Map testaments to value-label pairs
+        label: testament,
       }));
     }
 
     if (selectionType === "type") {
       return [...new Set(bibleData.map(book => book.type))].map(type => ({
         value: type,
-        label: type, // Map types to value-label pairs
+        label: type,
       }));
     }
 
-    return []; // Return empty array if no valid selection type
+    return [];
   }
 
-  // Handle the generation of a reading plan
-  const handleGenerateReadingPlan = async () => {
-    const start = new Date(startDate); // Parse start date
-    const end = new Date(endDate); // Parse end date
+const handleSelectionChange = (options: any) => {
+  // options is now an array of selected values
+  setSelectedOptions(options ? options.map((opt: any) => opt.value) : []);
+};
 
-    // Validate user inputs
+  const handleGenerateReadingPlan = async () => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
     if (selectedOptions.length === 0 || !startDate || !endDate || start >= end) {
       alert("Please provide valid input.");
       return;
     }
 
-    // Calculate selected books based on user options
     const selectedBooks = calculateBooks(selectedOptions, selectionType, bibleData);
 
-    // Check if any books were selected
     if (selectedBooks.length === 0) {
       alert("No books selected based on your options.");
       return;
     }
 
-    // Prepare chapter details for the reading plan
     const chapters = selectedBooks.map(row => ({
       book: row.book_name,
       chapter: row.chapter,
       verses: row.verses,
     }));
 
-    // Compute totals for plan generation
     const totalChapters = chapters.length;
     const totalVerses = chapters.reduce((sum, chapter) => sum + chapter.verses, 0);
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-    // Determine distribution type for the plan
     const distributionType = decideDistribution(totalChapters, totalVerses, totalDays);
     const readingPlanMethod = distributionType.method;
 
-    // Generate the reading plan
     const generatedPlan = generateReadingPlan(
       readingPlanMethod,
       selectedBooks,
@@ -108,11 +103,10 @@ function BiblePlan() {
       end
     );
 
-    setPlan(generatedPlan); // Update state with generated plan
+    setPlan(generatedPlan);
 
-    // Save the generated plan to Supabase
     const planNameToSave = planName || `Reading Plan from ${startDate} to ${endDate}`;
-    const planId = uuidv4(); // Generate unique plan ID
+    const planId = uuidv4();
 
     const { data: planData, error: planError } = await supabase
       .from('plans')
@@ -122,7 +116,7 @@ function BiblePlan() {
           name: planNameToSave,
           start_date: start,
           end_date: end,
-          user_id: '00000000-0000-0000-0000-000000000000', // Placeholder user ID
+          user_id: '00000000-0000-0000-0000-000000000000',
           created_at: new Date(),
         },
       ])
@@ -134,7 +128,6 @@ function BiblePlan() {
       return;
     }
 
-    // Prepare and save plan entries
     const planEntries = generatedPlan.map(entry => ({
       plan_id: planData.id,
       date: entry.date,
@@ -153,7 +146,6 @@ function BiblePlan() {
     }
   };
 
-  // Handle date range picker changes
   const handleDateChange = (start: string | null, end: string | null) => {
     if (start && end) {
       setStartDate(start);
@@ -168,7 +160,6 @@ function BiblePlan() {
           Bible Reading Plan Generator
         </h1>
         <form id="readingPlanForm" className="space-y-6">
-          {/* Plan Name */}
           <div>
             <label htmlFor="planName" className="block text-sm text-primary-content">
               Plan Name:
@@ -183,7 +174,6 @@ function BiblePlan() {
             />
           </div>
 
-          {/* Selection Type */}
           <div>
             <label htmlFor="selectionType" className="block text-sm text-primary-content">
               Select by:
@@ -200,26 +190,19 @@ function BiblePlan() {
             </select>
           </div>
 
-          {/* Multi-Select */}
-              <div>
-                <label htmlFor="selection" className="block text-sm text-primary-content">
-                  Choose:
-                </label>
+          {/* CustomSelect with dynamic options passed from getSelectionOptions */}
+          <div>
+           <label htmlFor="planName" className="block text-sm text-primary-content">
+              Choose:
+            </label>
+            <CustomSelect
+              options={getSelectionOptions()}
+              onChange={handleSelectionChange}
+            />
+          </div>
 
-                {/* CustomSelect with isMulti for multi-select functionality */}
-                <CustomSelect
-                  isMulti
-                  options={getSelectionOptions()}
-                  onChange={handleSelectionChange}
-                  className="mt-1"
-                  placeholder="Search and select..."
-                />
-              </div>
-
-          {/* Date Range Picker */}
           <DateRangePicker onDateChange={handleDateChange} />
 
-          {/* Generate Plan Button */}
           <button
             type="button"
             onClick={handleGenerateReadingPlan}
@@ -230,7 +213,6 @@ function BiblePlan() {
         </form>
       </div>
 
-      {/* Display Generated Plan */}
       {plan.length > 0 && (
         <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
           <h2 className="text-2xl font-semibold text-gray-800">Your Reading Plan:</h2>
