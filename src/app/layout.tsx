@@ -1,7 +1,6 @@
 import "./globals.css"; // Your global styles
 import Navbar from './components/Navbar';
 
-
 export const metadata = {
   title: "Bible Planner",
   description: "Plan your Bible readings effectively.",

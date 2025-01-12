@@ -9,6 +9,12 @@
   --foreground: var(--bc);
 }
 
+main {
+  z-index: 1;
+  position: relative;
+}
+
+
 body {
   @apply bg-base-100 text-base-content font-sans;
 }
