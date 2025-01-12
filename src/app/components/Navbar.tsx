@@ -1,13 +1,47 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { supabase } from '../../utils/supabase';
 
 const Navbar = () => {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Check for authenticated user using getUser
+    const fetchUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error fetching user:", error.message);
+      } else {
+        setUser(user);
+      }
+    };
+
+    fetchUser();
+
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user);
+    });
+
+    return () => {
+      authListener?.unsubscribe();
+    };
+  }, []);
+
   const closeDrawer = () => {
     // This will uncheck the checkbox to close the drawer
-    const drawerToggle = document.getElementById('my-drawer-3') as HTMLInputElement;
+    const drawerToggle = document.getElementById("my-drawer-3") as HTMLInputElement;
     if (drawerToggle) {
       drawerToggle.checked = false;
+    }
+  };
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Logout error:", error.message);
     }
   };
 
@@ -57,6 +91,12 @@ const Navbar = () => {
               <li><Link href="/">Home</Link></li>
               <li><Link href="/create_plan">Create Plan</Link></li>
               <li><Link href="/view_plans">View Plans</Link></li>
+              {/* Add the logout button or login link */}
+              {user ? (
+                <li><button onClick={handleLogout} className="btn btn-secondary">Logout</button></li>
+              ) : (
+                <li><Link href="/login">Login</Link></li>
+              )}
             </ul>
           </div>
         </div>
@@ -77,6 +117,12 @@ const Navbar = () => {
           <li><Link href="/" onClick={closeDrawer}>Home</Link></li>
           <li><Link href="/create_plan" onClick={closeDrawer}>Create Plan</Link></li>
           <li><Link href="/view_plans" onClick={closeDrawer}>View Plans</Link></li>
+          {/* Add the logout button or login link */}
+          {user ? (
+            <li><button onClick={handleLogout} className="btn btn-secondary w-full">Logout</button></li>
+          ) : (
+            <li><Link href="/login" onClick={closeDrawer}>Login</Link></li>
+          )}
         </ul>
       </div>
     </div>

@@ -1,49 +1,32 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { supabase } from '../utils/supabaseClient'; // assuming you have a separate client setup file
+"use client";
 
-interface AuthContextType {
-  user: any;
-  loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
-}
+// AuthContext.tsx - Example context for managing auth state
+import { createContext, useContext, useEffect, useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+const AuthContext = createContext(null)
 
-  // Get the current user from supabase
-  supabase.auth.onAuthStateChange((_, session) => {
-    setUser(session?.user ?? null);
-    setLoading(false);
-  });
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState(null)
 
-  const signIn = async (email: string, password: string) => {
-    setLoading(true);
-    const { data, error } = await supabase.auth.signIn({ email, password });
-    if (error) throw error;
-    setUser(data?.user);
-    setLoading(false);
-  };
+  useEffect(() => {
+    const session = supabase.auth.getSession()
+    setUser(session?.user || null)
 
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-  };
+    supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null)
+    })
+  }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => {
+  return useContext(AuthContext)
+}
