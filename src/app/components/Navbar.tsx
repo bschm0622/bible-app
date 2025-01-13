@@ -1,8 +1,22 @@
+
+
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // To redirect after logout
+import { supabase } from "@/utils/supabase"; // Import your Supabase client
 
 const Navbar = () => {
+  const router = useRouter(); // To redirect after sign out
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Logout failed:", error.message); // Handle the error if any
+    } else {
+      router.push("/login"); // Redirect to login page after successful logout
+    }
+  };
+
   return (
     <div className="drawer">
       {/* Hidden Input for Drawer Toggle */}
@@ -44,6 +58,14 @@ const Navbar = () => {
               <li><Link href="/">Home</Link></li>
               <li><Link href="/create_plan">Create Plan</Link></li>
               <li><Link href="/view_plans">View Plans</Link></li>
+              <li>
+                <button
+                  className="btn"
+                  onClick={handleSignOut} // Call sign-out handler
+                >
+                  Sign Out
+                </button>
+              </li>
             </ul>
           </div>
         </div>
@@ -65,6 +87,14 @@ const Navbar = () => {
           <li><Link href="/">Home</Link></li>
           <li><Link href="/create_plan">Create Plan</Link></li>
           <li><Link href="/view_plans">View Plans</Link></li>
+          <li>
+            <button
+              className="btn"
+              onClick={handleSignOut} // Call sign-out handler
+            >
+              Sign Out
+            </button>
+          </li>
         </ul>
       </div>
     </div>
