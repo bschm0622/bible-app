@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import LogoutButton from "../components/LogoutButton"
+import LogoutButton from "@components/LogoutButton"
 
 const Navbar = () => {
   return (

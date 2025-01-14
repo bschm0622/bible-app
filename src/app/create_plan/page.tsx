@@ -1,13 +1,13 @@
 "use client";
-import { supabase } from '../../utils/supabase';
+import { supabase } from '@utils/supabase';
 import { useState, useEffect } from 'react';
-import { calculateBooks, decideDistribution, generateReadingPlan } from '../lib/readingPlan';
+import { calculateBooks, decideDistribution, generateReadingPlan } from '@lib/readingPlan';
 import { v4 as uuidv4 } from 'uuid';
-import { Plan, PlanEntry } from '../../types/planTypes';
-import { BibleBook } from '../../types/bibleBook';
-import DateRangePicker from "../components/dateRangePicker";
+import { Plan, PlanEntry } from '@types/planTypes';
+import { BibleBook } from '@types/bibleBook';
+import DateRangePicker from "@components/dateRangePicker";
 import dynamic from 'next/dynamic';
-const CustomSelect = dynamic(() => import("../components/customSelect"), { ssr: false }); 
+const CustomSelect = dynamic(() => import("@components/customSelect"), { ssr: false }); 
 
 
 function BiblePlan() {
