@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import LogoutButton from "@components/LogoutButton"
 
 const Navbar = () => {
   return (
@@ -44,6 +45,7 @@ const Navbar = () => {
               <li><Link href="/">Home</Link></li>
               <li><Link href="/create_plan">Create Plan</Link></li>
               <li><Link href="/view_plans">View Plans</Link></li>
+              <li><LogoutButton/></li>
             </ul>
           </div>
         </div>
@@ -65,6 +67,7 @@ const Navbar = () => {
           <li><Link href="/">Home</Link></li>
           <li><Link href="/create_plan">Create Plan</Link></li>
           <li><Link href="/view_plans">View Plans</Link></li>
+          <li><LogoutButton/></li>
         </ul>
       </div>
     </div>
