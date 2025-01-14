@@ -1,22 +1,26 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
- 
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 export function middleware(request: NextRequest) {
-  // Add timestamp to make console logs clearly visible
-  console.log(`[${new Date().toISOString()}] Middleware running for: ${request.nextUrl.pathname}`)
+  // Log the middleware activity with a timestamp
+  console.log(`[${new Date().toISOString()}] Middleware running for: ${request.nextUrl.pathname}`);
   
-  const response = NextResponse.next()
-  response.headers.set('x-middleware-test', 'active')
-  
-  if (request.nextUrl.pathname === '/create_plan') {
-    console.log('Protected route accessed - redirecting to login')
-    return NextResponse.redirect(new URL('/login', request.url))
+  // List of protected routes
+  const protectedRoutes = ['/create_plan', '/view_plans'];
+
+  // Check if the requested path is protected
+  if (protectedRoutes.includes(request.nextUrl.pathname)) {
+    console.log(`Protected route accessed: ${request.nextUrl.pathname} - redirecting to login`);
+    return NextResponse.redirect(new URL('/login', request.url));
   }
-  
-  return response
+
+  // Continue the request for non-protected routes
+  const response = NextResponse.next();
+  response.headers.set('x-middleware-test', 'active');
+  return response;
 }
- 
-// Matcher updated to explicitly match create_plan
+
+// Matcher updated to include both /create_plan and /view_plans
 export const config = {
-  matcher: '/create_plan'
-}
+  matcher: ['/create_plan', '/view_plans'],
+};
