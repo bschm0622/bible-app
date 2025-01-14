@@ -22,6 +22,7 @@
     "paths": {
       "@components/*": ["./app/components/*"],
       "@lib/*": ["./app/lib/*"],
+      "@types/*": ["./app/types/*"],
       "@ui/*": ["./components/common/ui/*"],
       "@pages/*": ["./pages/*"],
       "@hooks/*": ["./hooks/*"],
