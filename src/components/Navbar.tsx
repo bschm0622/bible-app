@@ -43,8 +43,8 @@ const Navbar = () => {
           <div className="hidden flex-none lg:block">
             <ul className="menu menu-horizontal">
               <li><Link href="/">Home</Link></li>
-              <li><Link href="/create_plan">Create Plan</Link></li>
-              <li><Link href="/view_plans">View Plans</Link></li>
+              <li><Link href="/plans/create">Create Plan</Link></li>
+              <li><Link href="/plans/view">View Plans</Link></li>
               <li><LogoutButton/></li>
             </ul>
           </div>
@@ -65,8 +65,8 @@ const Navbar = () => {
         {/* Sidebar Links */}
         <ul className="menu bg-base-200 min-h-full w-80 p-4">
           <li><Link href="/">Home</Link></li>
-          <li><Link href="/create_plan">Create Plan</Link></li>
-          <li><Link href="/view_plans">View Plans</Link></li>
+          <li><Link href="/plans/create">Create Plan</Link></li>
+          <li><Link href="/plans/view">View Plans</Link></li>
           <li><LogoutButton/></li>
         </ul>
       </div>

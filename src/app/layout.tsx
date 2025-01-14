@@ -1,5 +1,4 @@
 import "./globals.css"; // Your global styles
-import Navbar from '@components/Navbar';
 
 export const metadata = {
   title: "Bible Planner",
@@ -13,10 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        {/* Navbar */}
-        <Navbar />
-        
+      <body>       
         {/* Page Content */}
         <main className="container mx-auto p-4">{children}</main>
       </body>
