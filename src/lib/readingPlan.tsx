@@ -1,5 +1,5 @@
-import {PlanEntry } from '../../types/planTypes';
-import { BibleBook } from '../../types/bibleBook';
+import { PlanEntry } from '@/types/planTypes';
+import { BibleBook } from '@/types/bibleBook';
 
 // Function to calculate books based on selection criteria
 export function calculateBooks(

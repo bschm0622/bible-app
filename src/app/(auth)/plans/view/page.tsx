@@ -1,8 +1,8 @@
 "use client"; // Mark this as a client component
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../../utils/supabase';
-import { Plan, PlanEntry } from '../../types/planTypes';
+import { supabase } from '@utils/supabase';
+import { Plan, PlanEntry } from '@/types/planTypes';
 
 const ViewPlansPage = () => {
   const [plans, setPlans] = useState<Plan[]>([]);

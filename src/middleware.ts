@@ -36,12 +36,11 @@ export async function middleware(request: NextRequest) {
 
   const { data: { session } } = await supabase.auth.getSession()
 
-  // Check if the current path is a protected route
-  const isProtectedRoute = ['/create_plan', '/view_plans', '/plans'].some(route => 
-    request.nextUrl.pathname.startsWith(route)
-  )
-
-  if (!session && isProtectedRoute) {
+  // Protect all routes under /plans and /account
+  if (!session && (
+    request.nextUrl.pathname.startsWith('/plans') ||
+    request.nextUrl.pathname.startsWith('/account')
+  )) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
@@ -50,8 +49,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/create_plan',
-    '/view_plans',
-    '/plans/:path*'  // This will protect all routes under /plans
+    '/plans/:path*',
+    '/account/:path*'
   ]
 }
