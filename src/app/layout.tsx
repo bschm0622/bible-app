@@ -13,12 +13,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+<<<<<<< Updated upstream
       <body>
         {/* Navbar */}
         <Navbar />
         
         {/* Page Content */}
         <main className="container mx-auto p-4">{children}</main>
+=======
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{metadata.title}</title>
+      </head>
+      <body className="bg-white text-gray-900"> {/* Apply no background here */}
+        {children}
+>>>>>>> Stashed changes
       </body>
     </html>
   );
