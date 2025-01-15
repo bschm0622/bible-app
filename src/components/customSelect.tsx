@@ -10,50 +10,53 @@ const customStyles: StylesConfig = {
   control: (provided) => ({
     ...provided,
     borderWidth: '2px',
-    borderColor: '#ccc',
-    borderRadius: '0.5rem', // Rounded corners for the input box
-    padding: '0.25rem 0.5rem',
-    backgroundColor: '#ffffff',
+    borderColor: '#D8DEE9', // base-300 color for the border
+    borderRadius: '0.375rem', // Rounded corners
+    padding: '0.25rem 0.75rem',
+    backgroundColor: '#FFFFFF', // base-100 color for background
     boxShadow: 'none',
     minHeight: 'auto',
     display: 'flex',
     alignItems: 'center',
+    transition: 'border-color 0.3s ease', // Smooth transition on focus
+    ':hover': {
+      borderColor: '#5E81AC', // primary-focus color on hover
+    },
   }),
   menu: (provided) => ({
     ...provided,
-    backgroundColor: '#ffffff',
-    borderColor: '#ccc',
+    backgroundColor: '#FFFFFF', // base-100 color for menu background
+    borderColor: '#D8DEE9', // base-300 for menu border
     borderRadius: '0.375rem',
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   }),
   option: (provided, state) => ({
     ...provided,
     padding: '0.5rem 1rem',
-    backgroundColor: state.isSelected ? '#0d6efd' : '#ffffff',
-    color: state.isSelected ? '#ffffff' : '#333',
+    backgroundColor: state.isSelected ? '#FFFFFF' : '#FFFFFF', // primary color for selected option
+    color: state.isSelected ? '#ECEFF4' : '#2E3440', // base-content color for normal option
     fontWeight: state.isSelected ? '600' : '400',
     ':hover': {
-      backgroundColor: '#f0f0f0',
+      backgroundColor: '#81A1C1', // primary-focus color on hover
     },
   }),
   multiValue: (provided) => ({
     ...provided,
-    backgroundColor: '#0d6efd',
-    color: 'white',
+    backgroundColor: '#81A1C1', // primary color for multi values
+    color: '#000000', // base-100 color for multi-value text
     borderRadius: '0.375rem',
-    padding: '0.25rem 0.5rem',
     margin: '0.125rem',
   }),
   multiValueLabel: (provided) => ({
     ...provided,
-    color: 'white',
+    color: '#000000', // base-100 color for multi-value label
     fontWeight: '600',
   }),
   multiValueRemove: (provided) => ({
     ...provided,
-    color: 'white',
+    color: '#000000',
     ':hover': {
-      backgroundColor: '#ff0000',
+      backgroundColor: '#D8DEE9', // error color for remove button hover
     },
   }),
 };

@@ -16,8 +16,9 @@ main {
 
 
 body {
-  @apply bg-base-100 text-base-content font-sans;
+  @apply bg-white text-base-content font-sans;
 }
+
 
 /* Add custom styles after the existing Tailwind configuration */
 
