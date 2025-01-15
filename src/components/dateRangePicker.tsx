@@ -84,7 +84,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
           <button
             key={option}
             onClick={(event) => handleRangeSelection(event, option)} // Pass event and option
-            className={`btn ${rangeType === option ? "btn-primary" : "btn-outline"} btn-sm rounded-md`}
+            className={`btn ${rangeType === option ? "btn-accent" : "btn-outline"} btn-sm rounded-md`}
           >
             {option}
           </button>

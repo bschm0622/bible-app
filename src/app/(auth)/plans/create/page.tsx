@@ -206,7 +206,7 @@ const handleSelectionChange = (options: any) => {
       <button
         type="button"
         onClick={handleGenerateReadingPlan}
-        className="w-full py-2 px-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent-focus focus:outline-none focus:ring-2 focus:ring-primary"
+        className="w-full py-2 px-4 btn btn-primary"
       >
         Generate Plan
       </button>

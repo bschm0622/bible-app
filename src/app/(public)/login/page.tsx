@@ -19,7 +19,7 @@ export default function LoginPage() {
                 type="email"
                 required
                 placeholder="Enter your email"
-                className="input input-bordered w-full rounded-lg py-3 px-6 text-lg"
+                className="input input-bordered w-full rounded-lg py-3 px-6 text-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
             <div className="form-control">
@@ -32,7 +32,7 @@ export default function LoginPage() {
                 type="password"
                 required
                 placeholder="Enter your password"
-                className="input input-bordered w-full rounded-lg py-3 px-6 text-lg"
+                className="input input-bordered w-full rounded-lg py-3 px-6 text-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               />
             </div>
             <div className="form-control mt-6">
