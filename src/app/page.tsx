@@ -3,6 +3,7 @@ import Link from "next/link";
 export default function LandingPage() {
   return (
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <div className="hero min-h-screen">
       <div className="hero-content text-center">
         <div className="max-w-lg">
@@ -11,6 +12,8 @@ export default function LandingPage() {
           <Link href="/create_plan">
             <button className="btn btn-primary text-white py-3 px-6 rounded-md text-xl">
 =======
+=======
+>>>>>>> Stashed changes
     <div className="bg-gradient-to-b from-blue-50 via-white to-blue-100 min-h-screen">
       {/* Navbar */}
       <nav className="navbar bg-transparent top-0 left-0 w-full z-50 shadow-none">
@@ -81,6 +84,9 @@ export default function LandingPage() {
 
           <Link href="/login">
             <button className="btn btn-primary px-8 py-3 rounded-full text-white hover:bg-primary-focus transition duration-300 mt-6">
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
               Get Started
             </button>
