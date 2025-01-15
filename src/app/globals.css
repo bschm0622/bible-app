@@ -38,4 +38,8 @@ body {
   .daisy-select .react-select__menu {
     @apply bg-white border-gray-300 rounded-md;
   }
+
+  .btn-primary, .btn-secondary, .btn-accent {
+  @apply rounded-full;
+}
 }
