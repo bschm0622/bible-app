@@ -34,21 +34,21 @@ const Navbar = () => {
 
           {/* Navbar Title */}
           <div className="mx-2 flex-1 px-2">
-            <Link href="/" className="text-xl font-bold text-primary">
+            <Link href="/" className="btn btn-ghost text-xl">
               Bible Reading App
             </Link>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden flex-none lg:flex items-center">
-            <ul className="menu menu-horizontal space-x-6">
-              <li><Link href="/" className="text-base text-gray-700 hover:text-primary">Home</Link></li>
-              <li><Link href="/plans/create" className="text-base text-gray-700 hover:text-primary">Create Plan</Link></li>
-              <li><Link href="/plans/view" className="text-base text-gray-700 hover:text-primary">View Plans</Link></li>
+            <ul className="menu menu-horizontal">
+              <li><Link href="/">Home</Link></li>
+              <li><Link href="/plans/create">Create Plan</Link></li>
+              <li><Link href="/plans/view">View Plans</Link></li>
             </ul>
 
             {/* Logout Button */}
-            <div className="ml-6">
+            <div>
               <LogoutButton />
             </div>
           </div>
@@ -68,9 +68,9 @@ const Navbar = () => {
         ></label>
         {/* Sidebar Links */}
         <ul className="menu bg-base-200 min-h-full w-80 p-4">
-          <li><Link href="/" className="text-lg text-gray-700 hover:text-primary">Home</Link></li>
-          <li><Link href="/plans/create" className="text-lg text-gray-700 hover:text-primary">Create Plan</Link></li>
-          <li><Link href="/plans/view" className="text-lg text-gray-700 hover:text-primary">View Plans</Link></li>
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/plans/create">Create Plan</Link></li>
+          <li><Link href="/plans/view">View Plans</Link></li>
           <li><LogoutButton /></li>
         </ul>
       </div>

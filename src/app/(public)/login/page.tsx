@@ -38,7 +38,7 @@ export default function LoginPage() {
             <div className="form-control mt-6">
               <button
                 formAction={login}
-                className="btn btn-primary w-full py-3 text-xl rounded-full"
+                className="btn btn-primary w-full py-3"
               >
                 Log In
               </button>
@@ -46,7 +46,7 @@ export default function LoginPage() {
             <div className="form-control">
               <button
                 formAction={signup}
-                className="btn btn-secondary w-full py-3 text-xl rounded-full"
+                className="btn btn-secondary w-full py-3"
               >
                 Sign Up
               </button>
