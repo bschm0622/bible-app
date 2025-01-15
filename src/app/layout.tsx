@@ -15,6 +15,7 @@ export default function RootLayout({
     <html lang="en">
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <body>
         {/* Navbar */}
         <Navbar />
@@ -22,6 +23,8 @@ export default function RootLayout({
         {/* Page Content */}
         <main className="container mx-auto p-4">{children}</main>
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
       <head>
@@ -32,6 +35,9 @@ export default function RootLayout({
       <body className="bg-white text-gray-900"> {/* Apply no background here */}
         {children}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
