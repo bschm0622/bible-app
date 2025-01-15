@@ -154,100 +154,100 @@ const handleSelectionChange = (options: any) => {
   };
 
   return (
-    <div className="card mx-auto p-6 space-y-8 max-w-3xl">
-      <div className="bg-base-200 p-8 rounded-xl shadow-sm">
-        <h1 className="text-4xl font-extrabold text-center text-primary-content mb-8">
-          Bible Reading Plan Generator
-        </h1>
-        <form id="readingPlanForm" className="space-y-6">
-          <div>
-            <label htmlFor="planName" className="block text-sm text-primary-content">
-              Plan Name:
-            </label>
-            <input
-              type="text"
-              id="planName"
-              value={planName}
-              onChange={(e) => setPlanName(e.target.value)}
-              placeholder="Enter a name for your plan"
-              className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="selectionType" className="block text-sm text-primary-content">
-              Select by:
-            </label>
-            <select
-              id="selectionType"
-              onChange={(e) => setSelectionType(e.target.value)}
-              value={selectionType}
-              className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="books">Specific Books</option>
-              <option value="testament">Testament</option>
-              <option value="type">Type</option>
-            </select>
-          </div>
-
-          {/* CustomSelect with dynamic options passed from getSelectionOptions */}
-          <div>
-           <label htmlFor="planName" className="block text-sm text-primary-content">
-              Choose:
-            </label>
-            <CustomSelect
-              options={getSelectionOptions()}
-              onChange={handleSelectionChange}
-            />
-          </div>
-
-          <DateRangePicker onDateChange={handleDateChange} />
-
-          <button
-            type="button"
-            onClick={handleGenerateReadingPlan}
-            className="w-full py-2 px-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            Generate Plan
-          </button>
-        </form>
+<div className="card mx-auto p-6 space-y-8 max-w-3xl">
+  <div className="bg-base-200 p-8 rounded-xl shadow-md">
+    <h1 className="text-4xl font-extrabold text-center text-primary-content mb-8">
+      Bible Reading Plan Generator
+    </h1>
+    <form id="readingPlanForm" className="space-y-6">
+      <div>
+        <label htmlFor="planName" className="block text-sm text-primary-content">
+          Plan Name:
+        </label>
+        <input
+          type="text"
+          id="planName"
+          value={planName}
+          onChange={(e) => setPlanName(e.target.value)}
+          placeholder="Enter a name for your plan"
+          className="mt-1 block w-full px-4 py-2 border border-base-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+        />
       </div>
 
-      {plan.length > 0 && (
-        <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Your Reading Plan:</h2>
-          <div className="overflow-x-auto">
-            <table className="table w-full">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Reading</th>
-                </tr>
-              </thead>
-              <tbody>
-                {plan.map((entry, index) => {
-                  const [year, month, day] = entry.date.split("-").map(Number);
-                  const localDate = new Date(year, month - 1, day);
+      <div>
+        <label htmlFor="selectionType" className="block text-sm text-primary-content">
+          Select by:
+        </label>
+        <select
+          id="selectionType"
+          onChange={(e) => setSelectionType(e.target.value)}
+          value={selectionType}
+          className="mt-1 block w-full px-4 py-2 border border-base-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+        >
+          <option value="books">Specific Books</option>
+          <option value="testament">Testament</option>
+          <option value="type">Type</option>
+        </select>
+      </div>
 
-                  return (
-                    <tr key={index}>
-                      <td>
-                        {localDate.toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </td>
-                      <td>{entry.reading}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      {/* CustomSelect with dynamic options passed from getSelectionOptions */}
+      <div>
+        <label htmlFor="planName" className="block text-sm text-primary-content">
+          Choose:
+        </label>
+        <CustomSelect
+          options={getSelectionOptions()}
+          onChange={handleSelectionChange}
+        />
+      </div>
+
+      <DateRangePicker onDateChange={handleDateChange} />
+
+      <button
+        type="button"
+        onClick={handleGenerateReadingPlan}
+        className="w-full py-2 px-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent-focus focus:outline-none focus:ring-2 focus:ring-primary"
+      >
+        Generate Plan
+      </button>
+    </form>
+  </div>
+
+  {plan.length > 0 && (
+    <div className="bg-base-100 p-6 rounded-xl shadow-md space-y-4">
+      <h2 className="text-2xl font-semibold text-neutral-content">Your Reading Plan:</h2>
+      <div className="overflow-x-auto">
+        <table className="table w-full text-base-content">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Reading</th>
+            </tr>
+          </thead>
+          <tbody>
+            {plan.map((entry, index) => {
+              const [year, month, day] = entry.date.split("-").map(Number);
+              const localDate = new Date(year, month - 1, day);
+
+              return (
+                <tr key={index}>
+                  <td>
+                    {localDate.toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td>{entry.reading}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
+  )}
+</div>
   );
 }
 

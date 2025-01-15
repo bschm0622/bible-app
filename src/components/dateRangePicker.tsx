@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 
@@ -76,7 +76,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
   };
 
   return (
-    <div className="p-4 bg-base-200 rounded-lg">
+    <div className="p-6 bg-base-200 rounded-lg">
       <h3 className="text-lg font-bold mb-4">Select a Date Range</h3>
 
       <div className="flex flex-wrap gap-2 mb-4">
@@ -84,9 +84,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
           <button
             key={option}
             onClick={(event) => handleRangeSelection(event, option)} // Pass event and option
-            className={`btn ${
-              rangeType === option ? "btn-primary" : "btn-outline"
-            } btn-sm`}
+            className={`btn ${rangeType === option ? "btn-primary" : "btn-outline"} btn-sm rounded-md`}
           >
             {option}
           </button>
@@ -94,7 +92,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
       </div>
 
       {rangeType === "custom" && (
-        <div className="flex gap-4 mb-4">
+        <div className="flex gap-6 mb-4">
           <div>
             <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
               Start Date:
@@ -104,7 +102,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
               id="startDate"
               value={startDate || ""}
               onChange={(e) => handleCustomDateChange("start", e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input input-bordered w-full mt-1"
             />
           </div>
           <div>
@@ -116,13 +114,13 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
               id="endDate"
               value={endDate || ""}
               onChange={(e) => handleCustomDateChange("end", e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="input input-bordered w-full mt-1"
             />
           </div>
         </div>
       )}
 
-      <div className="text-sm">
+      <div className="text-sm mt-4">
         <strong>Selected Range:</strong>
         <p>
           Start: {startDate || "None"} | End: {endDate || "None"}

@@ -19,7 +19,7 @@ module.exports = {
       // "emerald",
       // "corporate",
       // "synthwave",
-      "retro",
+      // "retro",
       // "cyberpunk",
       // "valentine",
       // "halloween",
@@ -42,7 +42,7 @@ module.exports = {
       // "coffee",
       // "winter",
       // "dim",
-      // "nord",
+      "nord",
       // "sunset",
     ],
 }

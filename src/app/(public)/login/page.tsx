@@ -1,15 +1,17 @@
-import { login, signup } from './actions'
+import { login, signup } from './actions';
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200">
-      <div className="card w-full max-w-md shadow-lg bg-base-100">
+    <div className="min-h-screen flex items-center justify-center bg-base-200 py-12">
+      <div className="card w-full max-w-md shadow-xl bg-base-100 rounded-xl p-8">
         <div className="card-body">
-          <h1 className="text-2xl font-bold text-center">Welcome!</h1>
-          <form className="form-control space-y-4">
+          <h1 className="text-3xl font-extrabold text-center mb-6">
+            Welcome Back!
+          </h1>
+          <form className="space-y-6">
             <div className="form-control">
               <label htmlFor="email" className="label">
-                <span className="label-text">Email</span>
+                <span className="label-text text-lg">Email</span>
               </label>
               <input
                 id="email"
@@ -17,12 +19,12 @@ export default function LoginPage() {
                 type="email"
                 required
                 placeholder="Enter your email"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full rounded-lg py-3 px-6 text-lg"
               />
             </div>
             <div className="form-control">
               <label htmlFor="password" className="label">
-                <span className="label-text">Password</span>
+                <span className="label-text text-lg">Password</span>
               </label>
               <input
                 id="password"
@@ -30,13 +32,13 @@ export default function LoginPage() {
                 type="password"
                 required
                 placeholder="Enter your password"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full rounded-lg py-3 px-6 text-lg"
               />
             </div>
-            <div className="form-control mt-4">
+            <div className="form-control mt-6">
               <button
                 formAction={login}
-                className="btn btn-primary w-full"
+                className="btn btn-primary w-full py-3 text-xl rounded-full"
               >
                 Log In
               </button>
@@ -44,7 +46,7 @@ export default function LoginPage() {
             <div className="form-control">
               <button
                 formAction={signup}
-                className="btn btn-secondary w-full"
+                className="btn btn-secondary w-full py-3 text-xl rounded-full"
               >
                 Sign Up
               </button>

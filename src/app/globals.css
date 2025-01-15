@@ -16,8 +16,9 @@ main {
 
 
 body {
-  @apply bg-base-100 text-base-content font-sans;
+  @apply bg-white text-base-content font-sans;
 }
+
 
 /* Add custom styles after the existing Tailwind configuration */
 
@@ -38,4 +39,8 @@ body {
   .daisy-select .react-select__menu {
     @apply bg-white border-gray-300 rounded-md;
   }
+.btn-primary, .btn-secondary, .btn-accent {
+  @apply rounded-full;
+}
+
 }
