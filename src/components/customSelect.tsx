@@ -37,12 +37,12 @@ const customStyles: StylesConfig = {
     color: state.isSelected ? '#ECEFF4' : '#2E3440', // base-content color for normal option
     fontWeight: state.isSelected ? '600' : '400',
     ':hover': {
-      backgroundColor: '#88C0D0', // primary-focus color on hover
+      backgroundColor: '#81A1C1', // primary-focus color on hover
     },
   }),
   multiValue: (provided) => ({
     ...provided,
-    backgroundColor: '#89C0D0', // primary color for multi values
+    backgroundColor: '#81A1C1', // primary color for multi values
     color: '#000000', // base-100 color for multi-value text
     borderRadius: '0.375rem',
     margin: '0.125rem',

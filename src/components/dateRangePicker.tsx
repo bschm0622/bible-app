@@ -75,16 +75,48 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
     );
   };
 
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "None";
+
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return date.toLocaleDateString("en-US", options);
+  };
+
+  // Dynamic header content based on selected range
+  const getHeaderText = () => {
+    switch (rangeType) {
+      case "30 days":
+        return `Selected Range: ${formatDate(startDate)} to ${formatDate(endDate)}`;
+      case "next month":
+        return `Selected Range: ${formatDate(startDate)} to ${formatDate(endDate)}`;
+      case "90 days":
+        return `Selected Range: ${formatDate(startDate)} to ${formatDate(endDate)}`;
+      case "180 days":
+        return `Selected Range: ${formatDate(startDate)} to ${formatDate(endDate)}`;
+      case "365 days":
+        return `Selected Range: ${formatDate(startDate)} to ${formatDate(endDate)}`;
+      case "custom":
+        return `Selected Range: ${formatDate(startDate)} to ${formatDate(endDate)}`;
+      default:
+        return `Select a Date Range`;
+    }
+  };
+
   return (
     <div className="p-6 bg-base-200 rounded-lg">
-      <h3 className="text-lg font-bold mb-4">Select a Date Range</h3>
+      <h3 className="text-lg font-bold mb-4">{getHeaderText()}</h3>
 
       <div className="flex flex-wrap gap-2 mb-4">
-        {["30 days", "next month", "90 days", "180 days", "365 days", "custom"].map((option) => (
+        {["custom", "30 days", "next month", "90 days", "180 days", "365 days"].map((option) => (
           <button
             key={option}
             onClick={(event) => handleRangeSelection(event, option)} // Pass event and option
-            className={`btn ${rangeType === option ? "btn-accent" : "btn-outline"} btn-sm rounded-md`}
+            className={`btn ${rangeType === option ? "btn-secondary" : "btn-outline"} btn-sm rounded-md`}
           >
             {option}
           </button>
@@ -119,13 +151,6 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
           </div>
         </div>
       )}
-
-      <div className="text-sm mt-4">
-        <strong>Selected Range:</strong>
-        <p>
-          Start: {startDate || "None"} | End: {endDate || "None"}
-        </p>
-      </div>
     </div>
   );
 };
