@@ -90,7 +90,9 @@ const handleSelectionChange = (options: any) => {
 
     const totalChapters = chapters.length;
     const totalVerses = chapters.reduce((sum, chapter) => sum + chapter.verses, 0);
-    const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    const diffTime = end.getTime() - start.getTime();
+    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
     const distributionType = decideDistribution(totalChapters, totalVerses, totalDays);
     const readingPlanMethod = distributionType.method;
