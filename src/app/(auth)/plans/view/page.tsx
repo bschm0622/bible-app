@@ -53,7 +53,7 @@ const ViewPlansPage = () => {
       const { data, error } = await supabase
         .from("plan_entries")
         .select("*")
-        .eq("plan_id", selectedPlan.id);
+        .eq("plan_id", selectedPlan!.id);
 
       if (error) {
         console.error("Error fetching plan entries:", error);
