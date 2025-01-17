@@ -17,29 +17,34 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
   ) => {
     event.preventDefault();
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     let start: Date | null = null;
     let end: Date | null = null;
 
     switch (range) {
       case "30 days":
-        start = today;
-        end = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
+        start = new Date(today);
+        end = new Date(today);
+        end.setDate(today.getDate() + 29);
         break;
       case "next month":
         start = new Date(today.getFullYear(), today.getMonth() + 1, 1);
         end = new Date(today.getFullYear(), today.getMonth() + 2, 0);
         break;
       case "90 days":
-        start = today;
-        end = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 90);
+        start = new Date(today);
+        end = new Date(today);
+        end.setDate(today.getDate() + 89);
         break;
       case "180 days":
-        start = today;
-        end = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 180);
+        start = new Date(today);
+        end = new Date(today);
+        end.setDate(today.getDate() + 179);
         break;
       case "365 days":
-        start = today;
-        end = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+        start = new Date(today);
+        end = new Date(today);
+        end.setDate(today.getDate() + 364);
         break;
       case "custom":
         start = null;
@@ -51,38 +56,59 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onDateChange }) => {
 
     setRangeType(range);
 
-    if (start) setStartDate(start.toISOString().split("T")[0]);
-    if (end) setEndDate(end.toISOString().split("T")[0]);
+    if (start) {
+      const startStr = new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate()
+      ).toISOString().split('T')[0];
+      setStartDate(startStr);
+    }
+    
+    if (end) {
+      const endStr = new Date(
+        end.getFullYear(),
+        end.getMonth(),
+        end.getDate()
+      ).toISOString().split('T')[0];
+      setEndDate(endStr);
+    }
 
     // Notify parent component of date changes
     onDateChange(
-      start ? start.toISOString().split("T")[0] : null,
-      end ? end.toISOString().split("T")[0] : null
+      start ? start.toISOString().split('T')[0] : null,
+      end ? end.toISOString().split('T')[0] : null
     );
   };
 
   const handleCustomDateChange = (type: "start" | "end", value: string) => {
+    const date = new Date(value);
+    date.setHours(0, 0, 0, 0);
+    const dateStr = date.toISOString().split('T')[0];
+
     if (type === "start") {
-      setStartDate(value);
+      setStartDate(dateStr);
     } else {
-      setEndDate(value);
+      setEndDate(dateStr);
     }
 
     // Notify parent component of custom date changes
     onDateChange(
-      type === "start" ? value : startDate,
-      type === "end" ? value : endDate
+      type === "start" ? dateStr : startDate,
+      type === "end" ? dateStr : endDate
     );
   };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "None";
 
-    const date = new Date(dateString);
+    // Create date from the ISO string and adjust for local timezone
+    const date = new Date(dateString + 'T00:00:00');
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "long",
       day: "numeric",
+      timeZone: 'UTC'  // Force UTC timezone for consistent display
     };
     return date.toLocaleDateString("en-US", options);
   };

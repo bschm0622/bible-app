@@ -93,69 +93,29 @@ const formatReading = (reading: string[]): string => {
 
 // Helper function to format readings for verses
 const formatVerseReading = (reading: string[]): string => {
-  console.log(`Formatting verse reading for input: ${JSON.stringify(reading)}`);
-
-  let formattedReading = "";
-  let lastBook = "";
-  let lastChapter = "";
-  let lastVerse = "";
-  let startBook = "";
-  let startChapter = "";
-  let startVerse = "";
-
-  reading.forEach((verse) => {
-    console.log(`Processing verse: ${verse}`);
-    const { book, chapter, verse: verseNum } = parseBibleReference(verse);
-
-    if (!verseNum) {
-      console.error(`Invalid verse format: ${verse}`);
-      throw new Error("Verse number is required for formatting.");
-    }
-
-    if (!startBook) { // Initialize the range
-      startBook = book;
-      startChapter = chapter;
-      startVerse = verseNum;
-    }
-
-    // Check if it's a new book or chapter, and finalize the previous range if needed
-    if (book !== lastBook || chapter !== lastChapter) {
-      if (lastBook) {
-        if (startBook === lastBook && startChapter === lastChapter) {
-          formattedReading += `${startBook} ${startChapter}:${startVerse}`;
-          if (startVerse !== lastVerse) formattedReading += `-${lastVerse}`;
-        } else if (startBook === lastBook) {
-          formattedReading += `${startBook} ${startChapter}:${startVerse}-${lastChapter}:${lastVerse}`;
-        } else {
-          formattedReading += `${startBook} ${startChapter}:${startVerse} - ${lastBook} ${lastChapter}:${lastVerse}`;
-        }
-        formattedReading += ", "; // Separator for the range
-      }
-
-      startBook = book;
-      startChapter = chapter;
-      startVerse = verseNum;
-    }
-
-    lastBook = book;
-    lastChapter = chapter;
-    lastVerse = verseNum;
-  });
-
-  // Finalize the last range
-  if (startBook) {
-    if (startBook === lastBook && startChapter === lastChapter) {
-      formattedReading += `${startBook} ${startChapter}:${startVerse}`;
-      if (startVerse !== lastVerse) formattedReading += `-${lastVerse}`;
-    } else if (startBook === lastBook) {
-      formattedReading += `${startBook} ${startChapter}:${startVerse}-${lastChapter}:${lastVerse}`;
-    } else {
-      formattedReading += `${startBook} ${startChapter}:${startVerse} - ${lastBook} ${lastChapter}:${lastVerse}`;
-    }
+  if (reading.length === 0) return '';
+  
+  // For single verse case
+  if (reading.length === 1) {
+    const { book, chapter, verse } = parseBibleReference(reading[0]);
+    return `${book} ${chapter}:${verse}`;
   }
 
-  console.log(`Formatted result: "${formattedReading}"`);
-  return formattedReading.trim(); // Remove trailing commas or spaces
+  // Get first and last verses
+  const first = parseBibleReference(reading[0]);
+  const last = parseBibleReference(reading[reading.length - 1]);
+
+  // If verses are in same book and chapter
+  if (first.book === last.book) {
+    if (first.chapter === last.chapter) {
+      return `${first.book} ${first.chapter}:${first.verse}-${last.verse}`;
+    }
+    // Same book, different chapters
+    return `${first.book} ${first.chapter}:${first.verse} - ${last.chapter}:${last.verse}`;
+  }
+
+  // If verses span across different books
+  return `${first.book} ${first.chapter}:${first.verse} - ${last.book} ${last.chapter}:${last.verse}`;
 };
 
 // Helper function to calculate chapters or verses per day
@@ -180,13 +140,15 @@ export const generateReadingPlan = (
   endDate: Date
 ): PlanEntry[] => {
   const plan: PlanEntry[] = [];
-  const currentDate = new Date(startDate);
+  
+  const currentDate = new Date(startDate.toISOString().split('T')[0]);
+  const endDateTime = new Date(endDate.toISOString().split('T')[0]);
 
   // Calculate the total chapters and verses
   const totalChapters = selectedBooks.length;
   const totalVerses = selectedBooks.reduce((sum, chapter) => sum + chapter.verses, 0);
 
-  if (totalChapters === 0 || currentDate >= endDate) {
+  if (totalChapters === 0 || currentDate > endDateTime) {
     alert("Invalid input: No chapters available or invalid date range.");
     return [{
       date: "",
@@ -201,10 +163,7 @@ export const generateReadingPlan = (
   let verseIndex = 0;
 
   // Generate the reading plan based on the selected method
-  for (let i = 0; i < totalDays; i++) {
-
-    if (currentDate > endDate) break;
-
+  for (let i = 0; i < totalDays && currentDate <= endDateTime; i++) {
     const dailyReadings: string[] = [];
     const chaptersForToday = method === "chapter" ? dailyChaptersArray[i] : dailyVersesArray[i];
 

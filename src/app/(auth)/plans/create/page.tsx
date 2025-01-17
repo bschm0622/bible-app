@@ -1,5 +1,5 @@
 "use client";
-import { supabase } from '@utils/supabase';
+import { supabase, createClient } from '@utils/supabase/client'
 import { useState, useEffect } from 'react';
 import { calculateBooks, decideDistribution, generateReadingPlan } from '@lib/readingPlan';
 import { v4 as uuidv4 } from 'uuid';
@@ -66,10 +66,22 @@ const handleSelectionChange = (options: any) => {
   setSelectedOptions(options ? options.map((opt: any) => opt.value) : []);
 };
 
-  const handleGenerateReadingPlan = async () => {
+const handleGenerateReadingPlan = async () => {
+    const supabase = createClient();  // Create a new client instance
     const start = new Date(startDate);
     const end = new Date(endDate);
-
+    
+    // Get current user instead of session since we're having issues with getSession()
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      console.error("Error fetching user:", userError);
+      alert("You must be logged in to generate a reading plan.");
+      return;
+    }
+    
+    const userId = user.id;
+    
     if (selectedOptions.length === 0 || !startDate || !endDate || start >= end) {
       alert("Please provide valid input.");
       return;
@@ -90,7 +102,9 @@ const handleSelectionChange = (options: any) => {
 
     const totalChapters = chapters.length;
     const totalVerses = chapters.reduce((sum, chapter) => sum + chapter.verses, 0);
-    const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    const diffTime = end.getTime() - start.getTime();
+    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
     const distributionType = decideDistribution(totalChapters, totalVerses, totalDays);
     const readingPlanMethod = distributionType.method;
@@ -116,7 +130,7 @@ const handleSelectionChange = (options: any) => {
           name: planNameToSave,
           start_date: start,
           end_date: end,
-          user_id: '00000000-0000-0000-0000-000000000000',
+          user_id: userId,
           created_at: new Date(),
         },
       ])

@@ -1,9 +1,13 @@
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr';
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+// Function to create a Supabase client (server-side or client-side context specific)
 export function createClient() {
-  // Create a supabase client on the browser with project's credentials
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  // This can be used for dynamic or isolated client creation if needed
+  return createBrowserClient(supabaseUrl, supabaseKey);
 }
+
+// Default browser-side Supabase client
+export const supabase = createBrowserClient(supabaseUrl, supabaseKey);
