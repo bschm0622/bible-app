@@ -12,6 +12,7 @@ export default function PlanDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0); // To track progress for the progress bar
+  const [currentDayIndex, setCurrentDayIndex] = useState(0); // Track the current day for pagination
 
   const params = useParams();
   const router = useRouter();
@@ -89,9 +90,23 @@ export default function PlanDetailsPage() {
     }
   };
 
+  const nextPage = () => {
+    if (currentDayIndex < planEntries.length - 1) {
+      setCurrentDayIndex(currentDayIndex + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentDayIndex > 0) {
+      setCurrentDayIndex(currentDayIndex - 1);
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!plan) return <div>Plan not found</div>;
+
+  const currentEntry = planEntries[currentDayIndex];
 
   return (
     <div className="container mx-auto p-6">
@@ -117,28 +132,48 @@ export default function PlanDetailsPage() {
         </progress>
       </div>
 
+      {/* Display current entry */}
       <div className="space-y-4">
-        {planEntries.map((entry) => (
-          <div key={entry.id} className="card bg-base-100 shadow-lg">
-            <div className="card-body">
-              <h2 className="card-title">
-                {new Date(entry.date).toLocaleDateString()}
-              </h2>
-              <p>{entry.reading}</p>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={entry.is_checked}
-                  onChange={(e) =>
-                    handleCheckboxChange(entry.id, e.target.checked)
-                  }
-                  className="checkbox"
-                />
-                <label>Completed</label>
-              </div>
+        <div className="card bg-base-100 shadow-lg">
+          <div className="card-body">
+            <h2 className="card-title">
+              {new Date(currentEntry.date).toLocaleDateString()}
+            </h2>
+            <p>{currentEntry.reading}</p>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={currentEntry.is_checked}
+                onChange={(e) =>
+                  handleCheckboxChange(currentEntry.id, e.target.checked)
+                }
+                className="checkbox"
+              />
+              <label>Completed</label>
             </div>
           </div>
-        ))}
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={prevPage}
+          className="btn btn-outline btn-sm"
+          disabled={currentDayIndex === 0}
+        >
+          Previous Day
+        </button>
+        <span className="text-lg font-semibold">
+          Day {currentDayIndex + 1} of {planEntries.length}
+        </span>
+        <button
+          onClick={nextPage}
+          className="btn btn-outline btn-sm"
+          disabled={currentDayIndex === planEntries.length - 1}
+        >
+          Next Day
+        </button>
       </div>
     </div>
   );
