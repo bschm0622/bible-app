@@ -53,9 +53,12 @@ const ViewPlansPage = () => {
   }, [currentPage, planEntries]);
 
   const openPlanDetails = (planId: string) => {
-    router.push(`/plans/view/${planId}`);
+    if (!planId) {
+      console.error('Plan ID is required');
+      return;
+    }
+    router.push(`/plans/${planId}`);
   };
-
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const totalPages = Math.ceil(planEntries.length / entriesPerPage);
