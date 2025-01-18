@@ -109,18 +109,20 @@ const handleGenerateReadingPlan = async () => {
     const distributionType = decideDistribution(totalChapters, totalVerses, totalDays);
     const readingPlanMethod = distributionType.method;
 
+    const planId = uuidv4();
+    
     const generatedPlan = generateReadingPlan(
       readingPlanMethod,
       selectedBooks,
       totalDays,
       start,
-      end
+      end,
+      planId
     );
 
     setPlan(generatedPlan);
 
     const planNameToSave = planName || `Reading Plan from ${startDate} to ${endDate}`;
-    const planId = uuidv4();
 
     const { data: planData, error: planError } = await supabase
       .from('plans')
@@ -142,12 +144,7 @@ const handleGenerateReadingPlan = async () => {
       return;
     }
 
-    const planEntries = generatedPlan.map(entry => ({
-      plan_id: planData.id,
-      date: entry.date,
-      reading: entry.reading,
-      created_at: new Date(),
-    }));
+    const planEntries = generatedPlan;
 
     const { error: entriesError } = await supabase
       .from('plan_entries')

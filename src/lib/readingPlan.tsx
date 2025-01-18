@@ -1,5 +1,6 @@
 import { PlanEntry } from '@/types/planTypes';
 import { BibleBook } from '@/types/bibleBook';
+import { v4 as uuidv4 } from 'uuid';
 
 // Function to calculate books based on selection criteria
 export function calculateBooks(
@@ -137,7 +138,8 @@ export const generateReadingPlan = (
   selectedBooks: BibleBook[],
   totalDays: number,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  planId: string
 ): PlanEntry[] => {
   const plan: PlanEntry[] = [];
   
@@ -151,8 +153,12 @@ export const generateReadingPlan = (
   if (totalChapters === 0 || currentDate > endDateTime) {
     alert("Invalid input: No chapters available or invalid date range.");
     return [{
+      id: uuidv4(),
+      plan_id: planId,
       date: "",
       reading: "Error: Invalid input.",
+      created_at: new Date(),
+      is_checked: false
     }];
   }
 
@@ -175,7 +181,14 @@ export const generateReadingPlan = (
         chapterIndex++;
       }
       const reading = formatReading(dailyReadings);
-      plan.push({ date: currentDate.toISOString().split("T")[0], reading });
+      plan.push({
+        id: uuidv4(),
+        plan_id: planId,
+        date: currentDate.toISOString().split("T")[0],
+        reading,
+        created_at: new Date(),
+        is_checked: false
+      });
     }
 
     else if (method === "verse") {
@@ -200,7 +213,14 @@ export const generateReadingPlan = (
         }
       }
       const reading = formatVerseReading(dailyReadings);
-      plan.push({ date: currentDate.toISOString().split("T")[0], reading });
+      plan.push({
+        id: uuidv4(),
+        plan_id: planId,
+        date: currentDate.toISOString().split("T")[0],
+        reading,
+        created_at: new Date(),
+        is_checked: false
+      });
     }
 
     // Increment the current date for the next day
