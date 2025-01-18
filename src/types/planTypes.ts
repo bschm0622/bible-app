@@ -1,6 +1,10 @@
 export interface PlanEntry {
+    id: string;
+    plan_id: string;
     date: string;
     reading: string;
+    created_at: Date;
+    is_checked: boolean;
   }
   
   export interface Plan {

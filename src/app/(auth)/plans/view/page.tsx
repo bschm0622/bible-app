@@ -1,21 +1,19 @@
-"use client"; // Mark this as a client component
+"use client";
 
 import { useState, useEffect } from "react";
 import { supabase } from "@utils/supabase/client";
-import { Plan, PlanEntry } from "@/types/planTypes";
+import { Plan } from "@/types/planTypes";
+import Link from "next/link";
 
 const ViewPlansPage = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [planEntries, setPlanEntries] = useState<PlanEntry[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // Track current page
   const [entriesPerPage] = useState(5); // Number of entries per page
   const [userId, setUserId] = useState<string | null>(null);
-
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc"); // Sort direction
+  const [sortBy, setSortBy] = useState<string>("created_at"); // Column to sort by
 
   useEffect(() => {
-    // Fetch user info on mount
     async function fetchUser() {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (error || !user) {
@@ -30,12 +28,12 @@ const ViewPlansPage = () => {
 
   useEffect(() => {
     if (!userId) return;
-    // Fetch plans when userId is available
     async function fetchPlans() {
       const { data, error } = await supabase
         .from("plans")
         .select("*")
-        .eq("user_id", userId);
+        .eq("user_id", userId)
+        .order(sortBy, { ascending: sortOrder === "asc" }); // Sort based on the current state
       if (error) {
         console.error("Error fetching plans:", error);
       } else {
@@ -43,73 +41,105 @@ const ViewPlansPage = () => {
       }
     }
     fetchPlans();
-  }, [userId]);
-
-  useEffect(() => {
-    if (!selectedPlan?.id) return;
-
-    // Fetch plan entries when a plan is selected
-    async function fetchPlanEntries() {
-      const { data, error } = await supabase
-        .from("plan_entries")
-        .select("*")
-        .eq("plan_id", selectedPlan!.id);
-
-      if (error) {
-        console.error("Error fetching plan entries:", error);
-      } else {
-        setPlanEntries(data || []);
-      }
-    }
-
-    fetchPlanEntries();
-  }, [selectedPlan]);
-
-  const openModal = (plan: Plan) => {
-    setSelectedPlan(plan);
-    setIsModalOpen(true);
-    setCurrentPage(1); // Reset to the first page when opening the modal
-  };
-
-  const closeModal = () => {
-    setSelectedPlan(null);
-    setIsModalOpen(false);
-  };
-
-  const indexOfLastEntry = currentPage * entriesPerPage;
-  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
-  const currentEntries = planEntries.slice(indexOfFirstEntry, indexOfLastEntry);
+  }, [userId, sortBy, sortOrder]);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const totalPages = Math.ceil(planEntries.length / entriesPerPage);
+  const totalPages = Math.ceil(plans.length / entriesPerPage);
+
+  const deletePlan = async (planId: string) => {
+    if (!confirm("Are you sure you want to delete this plan? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      // Delete related entries in `plan_entries`
+      const { error: entryError } = await supabase
+        .from("plan_entries")
+        .delete()
+        .eq("plan_id", planId);
+
+      if (entryError) {
+        throw new Error("Failed to delete plan entries: " + entryError.message);
+      }
+
+      // Delete the plan itself
+      const { error: planError } = await supabase
+        .from("plans")
+        .delete()
+        .eq("id", planId);
+
+      if (planError) {
+        throw new Error("Failed to delete plan: " + planError.message);
+      }
+
+      // Remove the plan from local state
+      setPlans(plans.filter((plan) => plan.id !== planId));
+      alert("Plan deleted successfully!");
+    } catch (error) {
+      console.error(error);
+      alert(error instanceof Error ? error.message : "An error occurred while deleting the plan.");
+    } finally {
+    }
+  };
+  const handleSort = (column: string) => {
+    const newSortOrder = sortBy === column && sortOrder === "asc" ? "desc" : "asc";
+    setSortBy(column);
+    setSortOrder(newSortOrder);
+  };
+
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-4xl font-bold text-center mb-8">View All Plans</h1>
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl font-bold">View All Plans</h1>
+        <p className="text-gray-600 mt-2">
+          Explore your saved plans and manage your entries with ease.
+        </p>
+      </div>
 
-      <div className="overflow-x-auto mb-8">
-        <table className="table w-full">
+      {/* Plans Table */}
+      <div className="overflow-x-auto shadow-lg rounded-lg mb-8">
+        <table className="table table-zebra w-full">
           <thead>
-            <tr>
-              <th>Name</th>
-              <th>Start Date</th>
-              <th>End Date</th>
+            <tr className="bg-primary text-white">
+              <th onClick={() => handleSort("name")}>
+                Name
+                {sortBy === "name" && (sortOrder === "asc" ? " 🔼" : " 🔽")}
+              </th>
+              <th onClick={() => handleSort("start_date")}>
+                Start Date
+                {sortBy === "start_date" && (sortOrder === "asc" ? " 🔼" : " 🔽")}
+              </th>
+              <th onClick={() => handleSort("end_date")}>
+                End Date
+                {sortBy === "end_date" && (sortOrder === "asc" ? " 🔼" : " 🔽")}
+              </th>
+              <th onClick={() => handleSort("created_at")}>
+                Created At
+                {sortBy === "created_at" && (sortOrder === "asc" ? " 🔼" : " 🔽")}
+              </th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+           <tbody>
             {plans.map((plan) => (
               <tr key={plan.id}>
-                <td>{plan.name}</td>
+                <td className="font-medium">{plan.name}</td>
                 <td>{new Date(plan.start_date).toLocaleDateString()}</td>
                 <td>{new Date(plan.end_date).toLocaleDateString()}</td>
-                <td>
-                  <button
-                    onClick={() => openModal(plan)}
-                    className="text-blue-500 hover:underline"
+                <td>{new Date(plan.created_at).toLocaleDateString()}</td>
+                <td className="flex gap-2">
+                  <Link
+                    href={`/plans/${plan.id}`}
+                    className="btn btn-sm btn-primary"
                   >
                     View Entries
+                  </Link>
+                  <button
+                    onClick={() => deletePlan(plan.id)}
+                    className="btn btn-sm btn-error"
+                  >
+                    Delete
                   </button>
                 </td>
               </tr>
@@ -118,69 +148,26 @@ const ViewPlansPage = () => {
         </table>
       </div>
 
-      {isModalOpen && selectedPlan && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-3xl w-full">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Plan Details: {selectedPlan.name}
-            </h2>
-            <div className="mb-4">
-              <strong>Start Date:</strong>{" "}
-              {new Date(selectedPlan.start_date).toLocaleDateString()}
-            </div>
-            <div className="mb-4">
-              <strong>End Date:</strong>{" "}
-              {new Date(selectedPlan.end_date).toLocaleDateString()}
-            </div>
-
-            <div className="overflow-x-auto mb-4">
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Reading</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentEntries.map((entry, index) => (
-                    <tr key={index}>
-                      <td>{new Date(entry.date).toLocaleDateString()}</td>
-                      <td>{entry.reading}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-4 py-2 bg-gray-300 rounded-md"
-              >
-                Previous
-              </button>
-              <span>
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-gray-300 rounded-md"
-              >
-                Next
-              </button>
-            </div>
-
-            <button
-              onClick={closeModal}
-              className="mt-4 py-2 px-4 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-700"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Pagination */}
+      <div className="flex items-center justify-between gap-4">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="btn btn-outline btn-sm"
+        >
+          Previous
+        </button>
+        <span className="text-lg font-semibold">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="btn btn-outline btn-sm"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
