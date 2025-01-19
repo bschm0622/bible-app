@@ -7,7 +7,11 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+  fontFamily: {
+    quicksand: ['Quicksand', 'sans-serif'], // Add Quicksand font
+      },
+},
   },
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
