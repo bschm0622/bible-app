@@ -6,8 +6,9 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="sticky top-0 bg-white shadow-md z-50">
         <div className="container mx-auto flex justify-between items-center px-8 py-4">
-          <Link href="/" className="text-xl font-bold text-primary">
-            Page Pacer
+          <Link href="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="Page Pacer Logo" className="w-10 h-10" />
+            <span className="text-xl font-bold text-primary">Page Pacer</span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-gray-700 hover:text-primary">
@@ -49,25 +50,20 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-24 px-4 md:px-8">
+      <section className="py-24 px-4 md:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100">
         <div className="container mx-auto text-center max-w-3xl">
           <h1 className="text-5xl font-extrabold text-gray-800 leading-tight">
-            Build Habits That Deepen Your Faith
+            Find your reading rhythm
+            <br />
+            <span className="text-primary">Redeem the time, page by page</span>
           </h1>
           <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-            Stay consistent in your Bible reading journey with personalized
-            plans. Start whenever you want, read at your own pace, and track
-            your spiritual progress easily.
+            Effortlessly track your Bible reading journey. Create a custom plan, stay consistent, and deepen your faith.
           </p>
           <div className="mt-8 flex justify-center gap-4">
             <Link href="/signup">
               <button className="btn btn-primary px-8 py-3 text-white">
                 Get Started
-              </button>
-            </Link>
-            <Link href="/login">
-              <button className="btn btn-outline btn-primary px-8 py-3">
-                Log In
               </button>
             </Link>
           </div>

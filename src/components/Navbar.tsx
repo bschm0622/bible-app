@@ -33,9 +33,10 @@ const Navbar = () => {
           </div>
 
           {/* Navbar Title */}
-          <div className="mx-2 flex-1 px-2">
+          <div className="flex-1">
             <Link href="/" className="btn btn-ghost text-xl">
-              Bible Reading App
+              <img src="/logo.png" alt="Page Pacer Logo" className="w-10 h-10" />
+              Page Pacer
             </Link>
           </div>
 
